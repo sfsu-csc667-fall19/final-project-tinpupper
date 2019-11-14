@@ -1,6 +1,8 @@
 ## Table of Contents (API)
-[Login](#Login)
-[Register](#Register) 
+[Login](#Login)</br>
+* [GET](#Login)</br>
+* [POST](#Login)</br>
+[Register](#Register)  
 
 
 ---
