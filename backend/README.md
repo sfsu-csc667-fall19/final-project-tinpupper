@@ -1,12 +1,24 @@
 ## Table of Contents (API)
-[Login](#Login)</br>
-* [GET](#Login)</br>
-* [POST](#Login)</br>
-
-[Register](#Register)  
-[Register](#Register)  
+- [Login](#Login)
+  * [Post](#Post)
 
 
 ---
 
-### Login
+## Login
+
+**Method:** Post
+
+**URL:**
+```
+/auth/login
+```
+
+**Response:**
+```
+{
+  username: 'bob'
+  isBusiness: true || false
+}
+```
+
