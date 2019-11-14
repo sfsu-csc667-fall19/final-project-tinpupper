@@ -7,45 +7,28 @@ const connect = require('../mongo/connect');
 const User = require('../models/user.model');
 
 const app = express();
+
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// POSTMAN url FORM ENCODED
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
-);
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const port = process.env.PORT || 3002;
 const mongoUrl =
   'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
 /* * * * * * * * * * * *
  * CONNECT TO MONGODB  *
  * * * * * * * * * * * */
-if (process.env.NODE_ENV === 'prod') {
-  connect(mongoUrl)
-    .then(async connection => {
-      console.log('Connected to database in registerService');
-    })
-    .catch(e => {
-      console.error(
-        '+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+',
-      );
-    });
-} else {
-  connect(mongoUrl)
-    .then(async connection => {
-      console.log('Connected to database in registerService');
-    })
-    .catch(e => {
-      console.error(
-        '+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+',
-      );
-    });
-}
-
-const port = process.env.PORT || 3002;
-const domain = process.env.DOMAIN || '';
+connect(mongoUrl)
+  .then(async connection => {
+    console.log('Connected to database in registerService');
+  })
+  .catch(e => {
+    console.error(
+      '+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+',
+    );
+  });
 
 /* * * * * * * * * *
  * AUTH COOKIES    *

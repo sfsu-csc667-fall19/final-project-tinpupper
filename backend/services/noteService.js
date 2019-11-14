@@ -37,7 +37,6 @@ connect(mongoUrl)
     );
   });
 
-// User needs cookies to
 app.use(cookiesNotNull);
 app.use(authenticate);
 
