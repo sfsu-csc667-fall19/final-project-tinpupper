@@ -1,30 +1,49 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+// const connect = require('../mongo/connect');
 
-/**
- * Mocha -> Connect to mongo -> Success -> Run test
- */
+// /**
+//  * Mocha -> Connect to mongo -> Success -> Run test
+//  */
 
-// ES6 promise
-mongoose.Promise = global.Promise;
+// beforeEach(function() {
+//   const mongoUrl =
+//     'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
-// before(done => {
-//   mongoose.connect('mongodb://localhost:27018');
-//   mongoose.connection
-//     .once('open', () => {
-//       console.log('Connected test');
-//       done();
+//   /* * * * * * * * * * * *
+//    * CONNECT TO DATABASE *
+//    * * * * * * * * * * * */
+//   connect(mongoUrl)
+//     .then(async connection => {
+//       console.log('Connected to database');
 //     })
-//     .on('error', error => {
-//       console.warn('Error: ', error);
-//       done(error);
+//     .catch(e => {
+//       console.error(
+//         '+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+',
+//       );
 //     });
 // });
 
-// Empty database before each tests
-// beforeEach(done => {
-//   mongoose.connection.collections.test.drop(() => {
-//     console.log('dropped ----');
-//     // Done emptying so continue execution
-//     done();
-//   });
-// });
+// // ES6 promise
+// mongoose.Promise = global.Promise;
+
+// // before(done => {
+// //   mongoose.connect('mongodb://localhost:27018');
+// //   mongoose.connection
+// //     .once('open', () => {
+// //       console.log('Connected test');
+// //       done();
+// //     })
+// //     .on('error', error => {
+// //       console.warn('Error: ', error);
+// //       done(error);
+// //     });
+// // });
+
+// // Empty database before each tests
+// // beforeEach(done => {
+// //   mongoose.connection.collections.test.drop(() => {
+// //     console.log('dropped ----');
+// //     // Done emptying so continue execution
+// //     done();
+// //   });
+// // });

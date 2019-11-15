@@ -1,9 +1,14 @@
 ## Table of Contents (API)
+
 - [Login](#Login)
 - [Register](#Register)
+- [User][#user]
+- [Restaurant][#restaurant]
 
 ## Note
+
 All errors are in the following format:
+
 ```
 {
   error: STRING,
@@ -18,6 +23,7 @@ All errors are in the following format:
 **Method:** Post
 
 **Body:**
+
 ```
 {
   username: 'bob',
@@ -26,11 +32,13 @@ All errors are in the following format:
 ```
 
 **URL:**
+
 ```
 /auth/login
 ```
 
 **Response:**
+
 ```
 {
   username: 'bob'
@@ -43,6 +51,7 @@ All errors are in the following format:
 **Method:** Post
 
 **Body:**
+
 ```
 {
   username: 'bob',
@@ -52,11 +61,13 @@ All errors are in the following format:
 ```
 
 **URL:**
+
 ```
 /register
 ```
 
 **Response:**
+
 ```
 {
   message: 'Successfully registered user',
@@ -65,3 +76,103 @@ All errors are in the following format:
 }
 ```
 
+## User
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/user/:id
+```
+
+**Response:**
+
+```
+{
+  message: 'User found',
+  username: 'bob',
+  isBusiness: true || false,
+  restaurantIDs: [userIDs]
+}
+```
+
+## Restaurant
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/restaurant/:id
+```
+
+**Response:**
+
+```
+{
+  message: 'Restaurant found',
+  name: 'Pho Noodle House'
+  reviews: [userIDs]
+}
+```
+
+**Method:** Post
+
+**Body:**
+
+```
+{
+  name: 'Pho Noodle House',
+}
+```
+
+**URL:**
+
+```
+/restaurant
+```
+
+**Response:**
+
+```
+{
+  message: 'Restaurant created',
+  name: 'Pho Noodle House'
+}
+```
+
+**Method:** Delete
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/restaurant/:id
+```
+
+**Response:**
+
+```
+{
+  message: 'Deleted restaurant',
+  id: '219308s90f0nd98xdfioue'
+}
+```

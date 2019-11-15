@@ -14,9 +14,9 @@ console.log(`REDIS in note controller: `, redisOptions);
 
 const client = redis.createClient(redisOptions);
 
-/**
- * ADD NOTE
- */
+/* * * * * * *
+ * ADD NOTE  *
+ * * * * * * */
 const addNote = async (req, res) => {
   console.log('addNote');
   const created = await Note.create({
@@ -29,9 +29,9 @@ const addNote = async (req, res) => {
   });
 };
 
-/**
- * UPDATE NOTE
- */
+/* * * * * * * *
+ * UPDATE NOTE *
+ * * * * * * * */
 const updateNote = async (req, res) => {
   let message = 'Updated note';
   const { id } = req.params;
@@ -46,9 +46,9 @@ const updateNote = async (req, res) => {
   });
 };
 
-/**
- * GET NOTE
- */
+/* * * * * * *
+ * GET NOTE  *
+ * * * * * * */
 const getNote = async (req, res) => {
   let message = 'Successfully received note';
   const { id } = req.params;
@@ -62,9 +62,9 @@ const getNote = async (req, res) => {
   });
 };
 
-/**
- * GET NOTES
- */
+/* * * * * * *
+ * GET NOTES *
+ * * * * * * */
 const getNotes = async (req, res) => {
   let message = 'Successfully received all notes';
   const received = await Note.find({}).exec();
@@ -77,9 +77,9 @@ const getNotes = async (req, res) => {
   });
 };
 
-/**
- * REMOVE NOTE
- */
+/* * * * * * * *
+ * REMOVE NOTE *
+ * * * * * * * */
 const removeNote = async (req, res) => {
   console.log('inside delete note');
   let message = 'Successfully removed note';
@@ -107,6 +107,8 @@ const cookiesNotNull = (req, res, next) => {
   if (!req.cookies.username || !req.cookies.password) {
     // Continue if they have a body
     if (req.body.username && req.body.password) return next();
+    console.error('FAILED COOKIESNOTNULL CHECK', req.body);
+    console.log(req.cookies);
     return res
       .status(400)
       .send({ error: 'No valid cookies or body authorization' });
