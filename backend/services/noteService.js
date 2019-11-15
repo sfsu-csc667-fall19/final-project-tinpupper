@@ -2,6 +2,7 @@ require('dotenv').config();
 // require('./websocket');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 const { json, urlencoded } = require('body-parser');
 const connect = require('../mongo/connect');
 const {
@@ -18,11 +19,11 @@ const app = express();
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(morgan());
 
 const port = 3001;
 
-const mongoUrl =
-  'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
+const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
 /* * * * * * * * * * * *
  * CONNECT TO DATABASE *
@@ -32,9 +33,7 @@ connect(mongoUrl)
     console.log('Connected to database in notesService');
   })
   .catch(e => {
-    console.error(
-      '+_+_+_+_+ Failed to connect to database in notesService +_+_+_+_+',
-    );
+    console.error('+_+_+_+_+ Failed to connect to database in notesService +_+_+_+_+');
   });
 
 app.use(cookiesNotNull);

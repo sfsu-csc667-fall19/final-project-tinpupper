@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 const md5 = require('md5');
 const connect = require('../mongo/connect');
 const User = require('../models/user.model');
@@ -14,8 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 3010;
 
-const mongoUrl =
-  'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
+const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
 /* * * * * * * * * * * *
  * CONNECT TO MONGODB  *
@@ -25,13 +25,12 @@ connect(mongoUrl)
     console.log('Connected to database in registerService');
   })
   .catch(e => {
-    console.error(
-      '+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+',
-    );
+    console.error('+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+');
   });
 
 app.use(cookiesNotNull);
 app.use(authenticate);
+app.use(morgan());
 
 app.post(`/user`, (req, res) => {});
 
@@ -43,10 +42,13 @@ app.delete('/user/:id', async (req, res) => {
 
   console.log('deleting id');
 
+  // Removed will be null if it didn't remove anything
+  // If it's not null, then removed contains the deleted user information
   const removed = await User.findByIdAndRemove(id, {
     useFindAndModify: false,
   }).exec();
 
+  // Failed to remove
   if (!removed) {
     return res.send({
       removed,
@@ -54,12 +56,11 @@ app.delete('/user/:id', async (req, res) => {
     });
   }
 
+  // Successfully removed user
   return res.send({
     removed,
     message: 'Deleted user',
   });
 });
 
-app.listen(port, () =>
-  console.log(`authService app listening on port ${port}!`),
-);
+app.listen(port, () => console.log(`authService app listening on port ${port}!`));

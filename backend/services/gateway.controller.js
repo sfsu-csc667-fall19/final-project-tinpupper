@@ -82,6 +82,22 @@ const user = (req, res) => {
   }
 };
 
+/* * * * * * * * * *
+ * RESTAURANT      *
+ * * * * * * * * * */
+const restaurant = (req, res) => {
+  console.log(req.path);
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://restaurant:3012',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3012',
+    });
+  }
+};
+
 // /* * * * * * * * * *
 //  * FILE SERVER     *
 //  * * * * * * * * * */
@@ -105,4 +121,5 @@ module.exports = {
   notes,
   user,
   fileServer,
+  restaurant,
 };
