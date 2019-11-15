@@ -9,6 +9,15 @@
 
 **Method:** Post
 
+**Body:**
+```
+{
+  username: 'bob',
+  password: '123',
+  isBusiness: true || false
+}
+```
+
 **URL:**
 ```
 /auth/login
