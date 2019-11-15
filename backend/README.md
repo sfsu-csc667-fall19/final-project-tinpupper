@@ -99,7 +99,7 @@ N/A
   message: 'User found',
   username: 'bob',
   isBusiness: true || false,
-  restaurantIDs: [userIDs]
+  restaurantIDs: [int]
 }
 ```
 
@@ -127,7 +127,7 @@ N/A
 {
   message: 'Restaurant found',
   name: 'Pho Noodle House'
-  reviews: [userIDs]
+  reviews: [userIDs: int]
 }
 ```
 
