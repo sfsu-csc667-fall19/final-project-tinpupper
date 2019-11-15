@@ -1,0 +1,48 @@
+version: '3.2'
+services:
+  gateway:
+    container_name: gatewayService
+    build: .
+    image: john/hw3
+    restart: always
+    ports:
+      - '3004:3004'
+    command: ['node', '/services/gateway.js']
+    depends_on: ['redisServer']
+  fileServer:
+    container_name: fileServer
+    image: john/hw3
+    restart: always
+    command: ['node', '/services/fileServer.js']
+    depends_on: ['redisServer']
+  register:
+    container_name: registerServer
+    image: john/hw3
+    restart: always
+    command: ['node', '/services/registerServer.js']
+    depends_on: ['redisServer']
+  auth:
+    container_name: authService
+    image: john/hw3
+    restart: always
+    command: ['node', '/services/authService.js']
+    depends_on: ['redisServer']
+  notes:
+    container_name: notesService
+    image: john/hw3
+    restart: always
+    command: ['node', '/services/noteService.js']
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    depends_on: ['redisServer']
+  websocket:
+    container_name: websocketService
+    image: john/hw3
+    restart: always
+    command: ['node', '/services/websocket.js']
+    depends_on: ['redisServer']
+  redisServer:
+    image: redis
+    restart: always
+    container_name: redisCache
