@@ -1,11 +1,11 @@
-## Table of Contents (API)
+# Table of Contents (API)
 
 - [Login](#Login)
 - [Register](#Register)
 - [User](#User)
 - [Restaurant](#Restaurant)
 
-## Note
+# Note
 
 All errors are in the following format:
 
@@ -18,9 +18,9 @@ All errors are in the following format:
 
 ---
 
-## Login
+# Login
 
-**Method:** Post
+## Method: Post
 
 **Body:**
 
@@ -48,9 +48,9 @@ All errors are in the following format:
 
 ---
 
-## Register
+# Register
 
-**Method:** Post
+## Method: Post
 
 **Body:**
 
@@ -80,9 +80,9 @@ All errors are in the following format:
 
 ---
 
-## User
+# User
 
-**Method:** Get
+## Method: Get
 
 **Body:**
 
@@ -109,9 +109,9 @@ N/A
 
 ---
 
-## Restaurant
+# Restaurant
 
-**Method:** Get
+## Method: Get
 
 **Body:**
 
@@ -135,7 +135,7 @@ N/A
 }
 ```
 
-**Method:** Post
+## Method: Post
 
 **Body:**
 
@@ -160,7 +160,7 @@ N/A
 }
 ```
 
-**Method:** Delete
+## Method: Delete
 
 **Body:**
 
