@@ -46,6 +46,8 @@ All errors are in the following format:
 }
 ```
 
+---
+
 ## Register
 
 **Method:** Post
@@ -76,6 +78,8 @@ All errors are in the following format:
 }
 ```
 
+---
+
 ## User
 
 **Method:** Get
@@ -102,6 +106,8 @@ N/A
   restaurantIDs: [userIDs]
 }
 ```
+
+---
 
 ## Restaurant
 
