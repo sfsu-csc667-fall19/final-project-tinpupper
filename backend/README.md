@@ -16,11 +16,9 @@ All errors are in the following format:
 }
 ```
 
----
-
 # Login
 
-## Method: Post
+### Method: Post
 
 **Body:**
 
@@ -50,7 +48,7 @@ All errors are in the following format:
 
 # Register
 
-## Method: Post
+### Method: Post
 
 **Body:**
 
@@ -82,7 +80,7 @@ All errors are in the following format:
 
 # User
 
-## Method: Get
+### Method: Get
 
 **Body:**
 
@@ -111,7 +109,7 @@ N/A
 
 # Restaurant
 
-## Method: Get
+### Method: Get
 
 **Body:**
 
@@ -135,7 +133,7 @@ N/A
 }
 ```
 
-## Method: Post
+### Method: Post
 
 **Body:**
 
@@ -160,7 +158,7 @@ N/A
 }
 ```
 
-## Method: Delete
+### Method: Delete
 
 **Body:**
 
