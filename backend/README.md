@@ -5,9 +5,7 @@
 - [User](#User)
 - [Restaurant](#Restaurant)
 
-# Note
-
-All errors are in the following format:
+# Errors are in the following format
 
 ```
 {
