@@ -2,8 +2,8 @@
 
 - [Login](#Login)
 - [Register](#Register)
-- [User][#user]
-- [Restaurant][#restaurant]
+- [User](#User)
+- [Restaurant](#Restaurant)
 
 ## Note
 
