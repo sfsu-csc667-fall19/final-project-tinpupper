@@ -2,6 +2,14 @@
 - [Login](#Login)
 - [Register](#Register)
 
+## Note
+All errors are in the following format:
+```
+{
+  error: STRING,
+  message: STRING
+}
+```
 
 ---
 
@@ -51,8 +59,9 @@
 **Response:**
 ```
 {
-  username: 'bob'
-  isBusiness: true || false
+  message: 'Successfully registered user',
+  user: 'bob',
+  isBusiness: true || false,
 }
 ```
 
