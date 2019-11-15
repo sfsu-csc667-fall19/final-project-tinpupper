@@ -1,11 +1,36 @@
 ## Table of Contents (API)
 - [Login](#Login)
-  * [Post](#Post)
+- [Register](#Register)
 
 
 ---
 
 ## Login
+
+**Method:** Post
+
+**Body:**
+```
+{
+  username: 'bob',
+  password: '123'
+}
+```
+
+**URL:**
+```
+/auth/login
+```
+
+**Response:**
+```
+{
+  username: 'bob'
+  isBusiness: true || false
+}
+```
+
+## Register
 
 **Method:** Post
 
@@ -20,7 +45,7 @@
 
 **URL:**
 ```
-/auth/login
+/register
 ```
 
 **Response:**
