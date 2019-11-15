@@ -1,5 +1,7 @@
 require('dotenv').config();
+const httpProxy = require('http-proxy');
 
+const apiProxy = httpProxy.createProxyServer();
 const NODE_ENV = process.env.NODE_ENV || 'dev';
 
 /* * * * * * * * * * * *
@@ -64,6 +66,22 @@ const register = (req, res) => {
   }
 };
 
+/* * * * * * * * * *
+ * USER            *
+ * * * * * * * * * */
+const user = (req, res) => {
+  console.log(req.path);
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://user:3010',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3010',
+    });
+  }
+};
+
 // /* * * * * * * * * *
 //  * FILE SERVER     *
 //  * * * * * * * * * */
@@ -85,5 +103,6 @@ module.exports = {
   loginAuth,
   register,
   notes,
+  user,
   fileServer,
 };

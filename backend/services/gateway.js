@@ -7,6 +7,8 @@ const {
   loginAuth,
   register,
   fileServer,
+  user,
+  notes,
 } = require('./gateway.controller');
 
 const app = express();
@@ -20,6 +22,7 @@ apiProxy.on('error', onProxyError);
 app.all(`/notes*`, notes);
 app.all(`/auth*`, loginAuth);
 app.all(`/register`, register);
-app.all('*', fileServer);
+app.all(`/user*`, user);
+// app.all('*', fileServer);
 
 app.listen(port, () => console.log(`Gateway on port ${port}!`));

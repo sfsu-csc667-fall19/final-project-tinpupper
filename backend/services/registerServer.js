@@ -27,18 +27,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post(`/register`, (req, res) => {
   console.log(`Attempting to register...`);
-  const { username, password } = req.body;
+  const { username, password, isBusiness } = req.body;
 
-  User.create({ username, password }, (err, user) => {
-    if (err)
+  User.create({ username, password, isBusiness }, (err, user) => {
+    if (err) {
+      console.log('Register failed...');
       return res.status(400).send({
         error: err.message,
-        message: 'The user probably existed in the database',
+        message:
+          'The user probably existed in the database or a field is missing',
       });
+    }
+
     console.log('Register successful...');
     return res.send({
+      id: user._id,
       message: 'Successfully registered user',
       user: user.username,
+      isBusiness,
     });
   });
 });

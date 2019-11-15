@@ -45,6 +45,7 @@ app.post(`/auth`, (req, res) => {
     req.body.username === undefined ||
     req.body.password === undefined
   ) {
+    console.log('FAILED: USER INFORMATION UNDEFINED');
     return res.status(400).send({
       error:
         'FAILED TO AUTHORIZE: Client does not have cookies stored for username or password',
@@ -68,6 +69,7 @@ app.post(`/auth/login`, (req, res) => {
     req.body.username === undefined ||
     req.body.password === undefined
   ) {
+    console.log('FAILED: USER INFORMATION UNDEFINED');
     return res.status(400).send({
       error:
         'FAILED TO AUTHORIZE: Client did not send a body with a username and password field',
