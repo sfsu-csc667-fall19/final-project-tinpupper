@@ -4,9 +4,15 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const connect = require('../mongo/connect');
 const Restaurant = require('../models/restaurant.model');
+const KafkaProducer = require('../helpers/KafkaProducer');
+
+const producer = new KafkaProducer('restaurant');
+
+producer.connect(() => {
+  console.log('Kafka connected in restaurantServer');
+});
 
 const app = express();
-app.use(morgan('combined'));
 const port = 3012;
 const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
@@ -21,6 +27,7 @@ connect(mongoUrl)
     console.error('+_+_+_+_+ Failed to connect to database in RESTAURANT +_+_+_+_+');
   });
 
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -62,6 +69,26 @@ app.post(`/restaurant`, (req, res) => {
    *    - Go to /backend/services/registerServer.js and CTRL+F "User.create" for an example usage
    * 3) Send back responses properly (see documentation in RESTAURANT section for POST method)
    */
+
+  const { name } = req.body;
+
+  /**
+   * THIS SHOULD BE MOVED INTO CONSUMER AND LEAVE PRODUCER SEND HERE
+   * */
+  // Restaurant.create({ name }, (err, res) => {
+  //   if (err) {
+  //     console.error('Unable to post restaurant');
+  //     res.send({ error: err.message, message: 'Unable to post restaurant' });
+  //   } else {
+  //     // Put restaurant information into kafka topic which triggers consumers
+  //     producer.send({ name });
+  //   }
+  // });
+  console.log(producer);
+
+  // restaurantConsumer will handle the post
+  producer.send({ name });
+  res.send({ name, message: 'Creating restaurant...' });
 });
 
 /* * * * * * * * * * * * *
