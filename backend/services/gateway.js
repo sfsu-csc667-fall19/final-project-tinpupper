@@ -11,7 +11,7 @@ const apiProxy = httpProxy.createProxyServer();
 
 app.use(cors());
 app.use(cookieParser());
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 apiProxy.on('error', onProxyError);
 app.all(`/notes*`, notes);
