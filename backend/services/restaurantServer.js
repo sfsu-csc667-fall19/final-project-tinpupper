@@ -11,9 +11,9 @@ const producerPost = new KafkaProducer(RESTAURANT_POST);
 const producerUpdate = new KafkaProducer(RESTAURANT_UPDATE);
 const producerDelete = new KafkaProducer(RESTAURANT_DELETE);
 
-producer.connect(() => {
-  console.log('Kafka connected in restaurantServer');
-});
+producerPost.connect(() => {});
+producerUpdate.connect(() => {});
+producerDelete.connect(() => {});
 
 const app = express();
 const port = 3012;
@@ -37,25 +37,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /* * * * * * * * * * * * *
  * GET RESTAURANT        *
  * * * * * * * * * * * * */
-app.get(`/restaurant/:id`, (req, res) => {
+app.get(`/restaurant/:id`, async (req, res) => {
   console.log(`Finding restaurant...`);
   const { id } = req.params;
 
-  Restaurant.findById(id, (err, res) => {
-    if (err) {
-      console.log('Could not find restaurant...');
-      return res.status(400).send({
-        error: err.message,
-        message: 'Unable to get restaurant',
-      });
-    }
+  const result = await Restaurant.findById(id).exec();
 
-    console.log('Found restaurant...');
-    return res.send({
-      message: 'Restaurant found',
-      name: res.data.name,
-      reviews: [1, 2, 3], // The user ids of those who left reviews
+  if (!result) {
+    console.log('Could not find restaurant...');
+    return res.status(400).send({
+      error: err.message,
+      message: 'Unable to get restaurant',
     });
+  }
+
+  console.log('Found restaurant...');
+
+  return res.send({
+    message: 'Restaurant found',
+    name: result.name,
+    reviews: [1, 2, 3], // The user ids of those who left reviews
   });
 });
 
@@ -92,6 +93,7 @@ app.delete(`/restaurant/:id`, (req, res) => {
    *    - Go to /backend/services/userService.js and CTRL+F "User.findByIdAndRemove" for an example usage
    * 3) Send back responses properly (see documentation in RESTAURANT section for DELETE method)
    */
+  res.send('need to make');
 });
 
 app.listen(port, () => console.log(`RESTAURANT: ${port}!`));

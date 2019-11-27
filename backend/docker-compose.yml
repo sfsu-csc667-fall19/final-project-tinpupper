@@ -11,59 +11,72 @@ services:
     environment:
       - NODE_ENV=prod
     deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   fileServer:
     container_name: fileServer
     image: john/final667
+    build: .
     command: ['node', './services/fileServer.js']
     depends_on: ['redisServer']
     deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   register:
     container_name: registerServer
     image: john/final667
+    build: .
     command: ['node', './services/registerServer.js']
     depends_on: ['redisServer']
     deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   auth:
     container_name: authService
     image: john/final667
+    build: .
     command: ['node', './services/authService.js']
     depends_on: ['redisServer']
     deploy:
-      replicas: 1
-  notes:
-    container_name: notesService
-    image: john/final667
-    command: ['node', './services/noteService.js']
-    environment:
-      - REDISHOST=redisServer
-      - NODE_ENV=prod
-    depends_on: ['redisServer']
-    deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   restaurant:
     container_name: restaurantService
     image: john/final667
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
     build: .
     command: ['node', './services/restaurantServer.js']
   restaurantConsumer:
     container_name: restaurantConsumerService
     image: john/final667
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
     build: .
     command: ['node', './services/restaurantConsumer.js']
   redisServer:
     image: redis
     container_name: redisCache
     deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
       - '2181:2181'
     deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   kafka:
     image: wurstmeister/kafka
     ports:
@@ -73,4 +86,6 @@ services:
       KAFKA_ADVERTISED_PORT: '9092'
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     deploy:
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure

@@ -21,7 +21,6 @@ class KafkaProducer {
 
   send(message) {
     if (!this.producer) return;
-
     this.producer.send([{ topic: this.topic, messages: [JSON.stringify(message)] }], err => {
       if (err) {
         console.error('KAFKA SEND FAILED');
