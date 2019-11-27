@@ -5,8 +5,11 @@ const morgan = require('morgan');
 const connect = require('../mongo/connect');
 const Restaurant = require('../models/restaurant.model');
 const KafkaProducer = require('../helpers/KafkaProducer');
+const { RESTAURANT_DELETE, RESTAURANT_POST, RESTAURANT_UPDATE } = require('../helpers/KafkaTopicNames');
 
-const producer = new KafkaProducer('restaurant');
+const producerPost = new KafkaProducer(RESTAURANT_POST);
+const producerUpdate = new KafkaProducer(RESTAURANT_UPDATE);
+const producerDelete = new KafkaProducer(RESTAURANT_DELETE);
 
 producer.connect(() => {
   console.log('Kafka connected in restaurantServer');
@@ -57,42 +60,27 @@ app.get(`/restaurant/:id`, (req, res) => {
 });
 
 /* * * * * * * * * * * * *
- * POST NEW RESTAURANT   *
+ * POST RESTAURANT       *
  * * * * * * * * * * * * */
 app.post(`/restaurant`, (req, res) => {
-  /**
-   * Check the backend documentation on our team's GitHub on how to format the response
-   *
-   * 1) Get the restaurant's name from req.body
-   * 2) Post to database using this function
-   *    - Restaurant.create( body, func(err, res) )
-   *    - Go to /backend/services/registerServer.js and CTRL+F "User.create" for an example usage
-   * 3) Send back responses properly (see documentation in RESTAURANT section for POST method)
-   */
-
   const { name } = req.body;
-
-  /**
-   * THIS SHOULD BE MOVED INTO CONSUMER AND LEAVE PRODUCER SEND HERE
-   * */
-  // Restaurant.create({ name }, (err, res) => {
-  //   if (err) {
-  //     console.error('Unable to post restaurant');
-  //     res.send({ error: err.message, message: 'Unable to post restaurant' });
-  //   } else {
-  //     // Put restaurant information into kafka topic which triggers consumers
-  //     producer.send({ name });
-  //   }
-  // });
-  console.log(producer);
-
-  // restaurantConsumer will handle the post
-  producer.send({ name });
+  producerPost.send({ name });
   res.send({ name, message: 'Creating restaurant...' });
 });
 
 /* * * * * * * * * * * * *
- * DELETE RESTAURANT   *
+ * UPDATE RESTAURANT     *
+ * * * * * * * * * * * * */
+app.put('/restaurant/:id', (req, res) => {
+  const { id } = req.params;
+  producerUpdate.send({ id });
+
+  // UPDATE isnt in documentation
+  res.send({ name, message: 'Updating restaurant...' });
+});
+
+/* * * * * * * * * * * * *
+ * DELETE RESTAURANT     *
  * * * * * * * * * * * * */
 app.delete(`/restaurant/:id`, (req, res) => {
   /**

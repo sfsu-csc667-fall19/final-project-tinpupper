@@ -93,6 +93,33 @@ N/A
 **URL:**
 
 ```
+/user
+```
+
+**Response:**
+
+```
+{
+  message: 'Users found',
+  [
+    username: 'bob',
+    isBusiness: true || false,
+    restaurantIDs: [restaurantID: int]
+  ]
+}
+```
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
 /user/:id
 ```
 
@@ -104,6 +131,54 @@ N/A
   username: 'bob',
   isBusiness: true || false,
   restaurantIDs: [restaurantID: int]
+}
+```
+
+**Method:** Put
+
+**Body:**
+
+```
+  {
+    username: 'newBob',
+  }
+```
+
+**URL:**
+
+```
+/user/:id
+```
+
+**Response:**
+
+```
+{
+  message: 'User updated',
+  username: 'newBob',
+}
+```
+
+**Method:** Delete
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/user/:id
+```
+
+**Response:**
+
+```
+{
+  message: 'User deleted',
+  username: 'bob'
 }
 ```
 
