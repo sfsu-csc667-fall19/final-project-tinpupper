@@ -20,3 +20,48 @@
 .App-link {
   color: #09d3ac;
 }
+
+.center-align {
+  text-align : center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.display-flex {
+  display: flex;
+}
+
+.width-40 {
+  width :  40%;
+}
+
+.flex-display-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.size-5-px {
+  font-size: 5px;
+}
+
+.justify-content-space-around {
+  justify-content: space-around;
+}
+
+.justify-content-space-evenly {
+  justify-content: space-evenly;
+}
+
+.padding-2-p {
+  padding : 1%;
+}
+
+.border-bottom {
+  border-bottom : 2px black solid;
+}
+
+.margin-top-2 {
+  margin-top: 2%; 
+}
