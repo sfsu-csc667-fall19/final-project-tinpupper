@@ -7,7 +7,7 @@ services:
     ports:
       - '3004:3004'
     command: ['node', './services/gateway.js']
-    depends_on: ['redisServer']
+    depends_on: ['redisServer', 'kafka']
     environment:
       - NODE_ENV=prod
     deploy:
@@ -19,7 +19,7 @@ services:
     image: john/final667
     build: .
     command: ['node', './services/fileServer.js']
-    depends_on: ['redisServer']
+    depends_on: ['redisServer', 'kafka']
     deploy:
       replicas: 2
       restart_policy:
@@ -29,7 +29,7 @@ services:
     image: john/final667
     build: .
     command: ['node', './services/registerServer.js']
-    depends_on: ['redisServer']
+    depends_on: ['redisServer', 'kafka']
     deploy:
       replicas: 2
       restart_policy:
@@ -39,7 +39,7 @@ services:
     image: john/final667
     build: .
     command: ['node', './services/authService.js']
-    depends_on: ['redisServer']
+    depends_on: ['redisServer', 'kafka']
     deploy:
       replicas: 2
       restart_policy:
