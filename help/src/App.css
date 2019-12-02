@@ -38,7 +38,8 @@
 }
 
 .flex-display-row {
-  display: flex;
+  display: inline-block;
+  /* display: flex; */
   flex-direction: row;
 }
 
