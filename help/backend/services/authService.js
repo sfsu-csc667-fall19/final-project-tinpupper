@@ -39,14 +39,15 @@ connect(mongoUrl)
 /* * * * * * * * * *
  * AUTH COOKIES    *
  * * * * * * * * * */
-app.post(`/auth`, (req, res) => {
+app.get(`/auth`, (req, res) => {
   /**0
-   * The reason why body is used here is because we took the cookies and passed it into body
+   * The reason why body is used here is because we took the cookies and passed it into body 
+   * Might have to use cookies directly.
    */
   console.log(`Attemping to verify user in login with cookies`);
-  console.log(`user: `, req.body);
+  console.log(`user: `, req.cookies);
 
-  if (req.body === undefined || req.body.username === undefined || req.body.password === undefined) {
+  if (req.cookies === undefined || req.cookies.username === undefined || req.cookies.password === undefined) {
     console.log('FAILED: USER INFORMATION UNDEFINED');
     return res.status(400).send({
       error: 'FAILED TO AUTHORIZE: Client does not have cookies stored for username or password',
@@ -54,7 +55,7 @@ app.post(`/auth`, (req, res) => {
     });
   }
 
-  const { username, password } = req.body;
+  const { username, password } = req.cookies;
   return findUser(username, password, res);
 });
 
@@ -77,6 +78,21 @@ app.post(`/auth/login`, (req, res) => {
   const { username, password } = req.body;
   return findUser(username, password, res);
 });
+
+/* * * * * * * * * *
+ * Log Out         *
+ * * * * * * * * * */
+
+app.get(`/logout`, (req,res) => {
+  // console.log(req.cookies);
+  // res.clearCookie("username");
+  // res.clearCookie("password");
+  return res.status(200).send({
+    message: "Sign out succesfull",
+    valid: false
+  })
+})
+
 
 app.listen(port, () => console.log(`authService app listening on port ${port}!`));
 

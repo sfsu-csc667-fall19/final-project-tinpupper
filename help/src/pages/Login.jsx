@@ -2,24 +2,24 @@ import React from "react";
 import { Card, Nav, Button } from "react-bootstrap";
 import md5 from "md5";
 import {Redirect} from "react-router-dom";
+import {connect} from "react-redux";
 import axios from "axios";
-// import/ 
-
+import {setUsername, setIsLoggedIn} from "../redux/actions/userActions.js";
 
 const options = {
   withCredentials: true
 };
 
-const Login = () => {
-  const [username, setUsername] = React.useState("");
+const Login = ({dispatch, username, isLoggedIn}) => {
+  // const [username, se] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMessage] = React.useState(
     "Please enter a valid user name"
   );
   const [error, setError] = React.useState(false);
-  const [isSignedIn, setIsSignedIn] = React.useState(false);
 
   const signInUser = () => {
+    console.log(username);
     const body = {
       username,
       password: md5(password)
@@ -32,19 +32,23 @@ const Login = () => {
       if (response.data.error === "Bad user information") {
         let value = true;
         setError(value);
+        dispatch(setUsername(""));
       }
       if (response.data.message === "Successfully authenticated") {
-        document.cookie = `username = ${username}`;
-        document.cookie = `password = ${md5(password)}`
+        console.log("After authentication", username);
+        document.cookies = `username = ${username}`;
+        document.cookies = `password = ${md5(password)}`
+        debugger;
         let value = true;
-        setIsSignedIn(value);
+
+        dispatch(setIsLoggedIn(value));
       }
     });
   };
 
   return (
     <div className="display-flex center-align margin-top-2 justify-content-center">
-      {isSignedIn ? (
+      {isLoggedIn ? (
         <Redirect to="/writereview" />
       ) : (
         <Card className="justify-content-center">
@@ -68,7 +72,7 @@ const Login = () => {
                 <input
                   required
                   onChange={e => {
-                    setUsername(e.target.value);
+                    dispatch(setUsername(e.target.value));
                   }}
                   type="text"
                 />
@@ -104,4 +108,12 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapStateToProps = state => ({
+  username: state.userReducer.username,
+  isLoggedIn: state.userReducer.isLoggedIn,
+});
+
+export default connect(mapStateToProps)(Login);
+
+
+

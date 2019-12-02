@@ -2,15 +2,13 @@
 * @Author: aadityac15
 * @Date:   2019-11-27 23:56:55
 * @Last Modified by:   aadityac15
-* @Last Modified time: 2019-11-28 00:00:05
+* @Last Modified time: 2019-12-02 13:00:27
 */
 
 // Step 1 initialize state
 const INITIAL_STATE = {
-  email: 'temp',
+  username: '',
   isLoggedIn: false,
-  activeUsers: 0,
-  notes : []
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -21,18 +19,12 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isLoggedIn: action.isLoggedIn,
       };
-    case 'SET_EMAIL':
+    case 'SET_USERNAME':
       return {
         ...state, // spread operator
-        // email: state.email,
-        // isLoggedIn: state.isLoggedIn,
-        email: action.email,
+        username: action.username,
       };
-    case 'SET_ACTIVE_USERS':
-      return {
-        ...state,
-        activeUsers: action.activeUsers,
-      };
+    
 
     default:
       return state;

@@ -42,7 +42,14 @@
 }
 
 .flex-display-row {
+  display: inline-block;
   display: flex;
+  flex-direction: row;
+}
+
+
+.display-row {
+  display: inline-block;
   flex-direction: row;
 }
 
