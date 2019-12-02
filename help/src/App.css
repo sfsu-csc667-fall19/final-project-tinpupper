@@ -29,6 +29,10 @@
   justify-content: center;
 }
 
+.flex-column {
+  flex-direction: column;
+}
+
 .display-flex {
   display: flex;
 }
@@ -40,6 +44,10 @@
 .flex-display-row {
   display: flex;
   flex-direction: row;
+}
+
+.margin-top-5 {
+  margin-top : 5%;
 }
 
 .size-5-px {

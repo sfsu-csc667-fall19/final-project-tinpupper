@@ -3,6 +3,7 @@ import { Switch, Route, NavLink } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import UserLogin from "./pages/UserLogin";
 import "./App.css";
 
 const App = () => {
@@ -16,11 +17,13 @@ const App = () => {
 				<NavLink to="/login"> Login </NavLink>
 				<NavLink to="/join"> Join </NavLink>
 				<NavLink to="/signout"> Signout </NavLink>
+				<NavLink to="/adfasdf">dajakdnfajkdnf</NavLink>
 			</div>
 			<Switch>
 				<Route path="/writereview" />
 				<Route path="/settings" />
 				<Route path="/business" />
+				<Route path="/adfasdf" component={UserLogin} />
 				<Route path="/login" component={Login} />
 				<Route path="/join" component = {Signup}/>
  				<Route exact path="/" component={Home} />

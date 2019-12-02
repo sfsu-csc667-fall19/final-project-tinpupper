@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const connect = require('../mongo/connect');
 const User = require('../models/user.model');
 
-const app = express();
+const app = express(); 
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -16,7 +16,12 @@ app.use(morgan());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 3002;
-const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
+// const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
+
+/*
+Local Mongo setup
+ */
+const mongoUrl = "mongodb://localhost:27017/Lab12";
 
 /* * * * * * * * * * * *
  * CONNECT TO MONGODB  *
@@ -24,16 +29,18 @@ const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWr
 connect(mongoUrl)
   .then(async connection => {
     console.log('Connected to database in registerService');
+    // console.log(connection);
   })
   .catch(e => {
     console.error('+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+');
   });
 
+
 /* * * * * * * * * *
  * AUTH COOKIES    *
  * * * * * * * * * */
 app.post(`/auth`, (req, res) => {
-  /**
+  /**0
    * The reason why body is used here is because we took the cookies and passed it into body
    */
   console.log(`Attemping to verify user in login with cookies`);
@@ -54,6 +61,7 @@ app.post(`/auth`, (req, res) => {
 /* * * * * * * * * *
  * AUTH BODY       *
  * * * * * * * * * */
+
 app.post(`/auth/login`, (req, res) => {
   console.log(`Attemping to verify user in login with body`);
   console.log(`user: `, req.body);
@@ -76,6 +84,10 @@ app.listen(port, () => console.log(`authService app listening on port ${port}!`)
  * HELPERS *
  * * * * * */
 const findUser = (username, password, res) => {
+
+  console.log("The username in findUser" + username);
+  console.log("The password in findUser" + password);
+
   return User.findOne({ username, password }, (err, user) => {
     if (err) return res.send({ error: 'Database Error', valid: false });
     if (!user) return res.send({ error: 'Bad user information', valid: false });
