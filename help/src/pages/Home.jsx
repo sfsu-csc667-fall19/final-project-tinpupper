@@ -35,12 +35,28 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
      * 													   *
      * DELETE THIS COMMENT BOX IF NO LONGER NEEDED         *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    document.cookie = "username=bob"; // This is a real user that exists in my mongoDB
+    document.cookie = "password=123";
     Axios.post("/auth/cookies", {}, options).then(res => {
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      // JOHN:
+      // Logging the information
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      console.log("JOHN COOKIES RESPONSE: ");
+      console.log(res.data.message);
+      console.log(res.data.user);
+      console.log("END JOHN COOKIES RESPONSE: ");
+
       console.log("Res from auth", res);
       if (res.data.valid === true) {
         let value = true;
         dispatch(setIsLoggedIn(value));
-        dispatch(setUsername(res.data.user));
+
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        // JOHN:
+        // I've changed this from res.data.user to res.data.user.username
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        dispatch(setUsername(res.data.user.username));
       }
     });
   }, []);
@@ -48,9 +64,7 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
   React.useEffect(() => {
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * JOHN:											   *
-     * "/list" route doesnt exists in our backend.         *
-     * You should remove this Axios call. You have mock    *
-     * data already up above.               			   *
+     * "/list" route doesnt exists in our backend.         * 			   *
      * 													   *
      * DELETE THIS COMMENT BOX IF NO LONGER NEEDED         *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * */
