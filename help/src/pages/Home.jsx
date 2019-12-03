@@ -28,6 +28,8 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
      * JOHN:											   *
      * Route: http://167.172.249.188:3004/auth/cookies     *
      * I added a cookies route in the backend for clarity  *
+     * 													   *
+     * DELETE THIS COMMENT BOX IF NO LONGER NEEDED         *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Axios.post("/auth/cookies", {}, options).then(res => {
       console.log("Res from auth", res);
@@ -41,13 +43,23 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
   }, []);
 
   React.useEffect(() => {
-    Axios.get("/list")
-      .then(res => {
-        setNames(res.data);
-      })
-      .catch(console.log);
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * JOHN:											   *
+     * "/list" route doesnt exists in our backend.         *
+     * You should remove this Axios call. You have mock    *
+     * data already up above.               			   *
+     * 													   *
+     * DELETE THIS COMMENT BOX IF NO LONGER NEEDED         *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    //     Axios.get("/list")
+    //       .then(res => {
+    //         setNames(res.data);
+    //       })
+    //       .catch(console.log);
   }, []);
+
   console.log(isLoggedIn);
+  console.log(username);
 
   return (
     <div>
