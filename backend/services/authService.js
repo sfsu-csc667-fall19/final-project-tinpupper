@@ -104,7 +104,7 @@ const findUser = (username, password, res) => {
     return res.send({
       message: 'Successfully authenticated',
       valid: true,
-      user: username,
+      user,
     });
   });
 };

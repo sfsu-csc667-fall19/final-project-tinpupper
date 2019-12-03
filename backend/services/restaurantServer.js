@@ -35,7 +35,30 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /* * * * * * * * * * * * *
- * GET RESTAURANT        *
+ * GET ALL RESTAURANT    *
+ * * * * * * * * * * * * */
+app.get(`/restaurant`, async (req, res) => {
+  console.log(`Getting ALL restaurants`);
+  const restaurants = await Restaurant.find({}).exec();
+
+  if (!restaurants) {
+    console.log('Could not ALL restaurants');
+    return res.status(400).send({
+      error: err.message,
+      message: 'Unable to get ALL restaurant',
+    });
+  }
+
+  console.log('Found restaurant...');
+
+  return res.send({
+    message: 'Restaurants found',
+    restaurants,
+  });
+});
+
+/* * * * * * * * * * * * *
+ * GET SINGLE RESTAURANT *
  * * * * * * * * * * * * */
 app.get(`/restaurant/:id`, async (req, res) => {
   console.log(`Finding restaurant...`);
@@ -64,9 +87,9 @@ app.get(`/restaurant/:id`, async (req, res) => {
  * POST RESTAURANT       *
  * * * * * * * * * * * * */
 app.post(`/restaurant`, (req, res) => {
-  const { name } = req.body;
-  producerPost.send({ name });
-  res.send({ name, message: 'Creating restaurant...' });
+  const { name, description } = req.body;
+  producerPost.send({ name, description });
+  res.send({ name, description, message: 'Creating restaurant...' });
 });
 
 /* * * * * * * * * * * * *

@@ -1,9 +1,16 @@
 ## Table of Contents (API)
 
+- [Cookie](#Cookie)
 - [Login](#Login)
 - [Register](#Register)
 - [User](#User)
 - [Restaurant](#Restaurant)
+
+TODO:
+Update user response to have restaurants ID
+Fix login response since more data is added
+Add /auth/cookie documentation
+Fix auth cookie response more data added
 
 ## Note
 
@@ -13,6 +20,34 @@ All errors are in the following format:
 {
   error: STRING,
   message: STRING
+}
+```
+
+---
+
+## Cookie
+
+**Method:** Post
+
+**Body:**
+
+```
+{} leave as empty object
+```
+
+**URL:**
+
+```
+/auth/cookies
+```
+
+**Response:**
+
+```
+{
+  username: 'bob'
+  isBusiness: true || false
+  restaurants: [restaurantID: int]
 }
 ```
 
@@ -197,6 +232,29 @@ N/A
 **URL:**
 
 ```
+/restaurant
+```
+
+**Response:**
+
+```
+{
+  message: 'Restaurants found',
+  restaurants: [restaurant: object]
+}
+```
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
 /restaurant/:id
 ```
 
@@ -206,6 +264,7 @@ N/A
 {
   message: 'Restaurant found',
   name: 'Pho Noodle House'
+  description: 'A great place to eat stuff and do things'
   reviews: [userID: int]
 }
 ```
@@ -217,6 +276,7 @@ N/A
 ```
 {
   name: 'Pho Noodle House',
+  description: 'This is a restaurant that sells food oh yes it does.'
 }
 ```
 
@@ -230,8 +290,9 @@ N/A
 
 ```
 {
-  message: 'Restaurant created',
-  name: 'Pho Noodle House'
+  message: 'Creating restaurant... (kafka)',
+  name: 'Pho Noodle House',
+  description: 'This is a restaurant that sells food oh yes it does.'
 }
 ```
 
