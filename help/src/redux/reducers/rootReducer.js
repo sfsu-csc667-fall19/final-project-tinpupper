@@ -8,8 +8,10 @@
 import {combineReducers} from 'redux';
 // import notesReducer from './notesReducer';
 import userReducer from './userReducer';
+import businessReducer from './businessReducer';
 export default combineReducers({
   userReducer,
+  businessReducer,
 });
 
 
