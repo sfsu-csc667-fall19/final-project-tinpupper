@@ -2,13 +2,14 @@
 * @Author: aadityac15
 * @Date:   2019-11-27 23:56:55
 * @Last Modified by:   aadityac15
-* @Last Modified time: 2019-12-02 13:00:27
+* @Last Modified time: 2019-12-03 03:23:40
 */
 
 // Step 1 initialize state
 const INITIAL_STATE = {
   username: '',
   isLoggedIn: false,
+  isSignedUp: false
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -24,7 +25,17 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state, // spread operator
         username: action.username,
       };
-    
+
+    case "SET_IS_SIGNED_UP":
+      return {
+        ...state,
+        isSignedUp : action.isSignedUp
+      }
+    case "SET_IS_BUSINESS":
+      return {
+        ...state,
+        isBusiness: action.isBusiness
+      }
 
     default:
       return state;

@@ -13,13 +13,12 @@ const options = {
   withCredentials: true
 };
 
-const App = ({ isLoggedIn, dispatch }) => {
+const App = ({ isLoggedIn, dispatch, isBusiness }) => {
   const logOutUser = () => {
-    axios.get("/logout", options).then(res => {
-      console.log(res);
-    });
+    // document.clearCookie("username");
+    // document.clearCookie("password");
     // dispatch(setIsLoggedIn(false));
-    // window.location.href= "/";
+    // window.location.href= "//";
   };
   return (
     <div className="App">
@@ -30,7 +29,7 @@ const App = ({ isLoggedIn, dispatch }) => {
         <NavLink to="/">Home </NavLink>
         <NavLink to="/writereview">Write a review </NavLink>
         <NavLink to="/settings"> Settings </NavLink>
-        <NavLink to="/business"> Business </NavLink>
+        {isBusiness &&<NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
         {!isLoggedIn && <NavLink to="/join"> Join </NavLink>}
 
@@ -57,7 +56,8 @@ const App = ({ isLoggedIn, dispatch }) => {
 };
 
 const mapStateToProps = state => ({
-  isLoggedIn: state.userReducer.isLoggedIn
+  isLoggedIn: state.userReducer.isLoggedIn,
+  isBusiness: state.userReducer.isBusiness,
 });
 
 export default connect(mapStateToProps)(App);

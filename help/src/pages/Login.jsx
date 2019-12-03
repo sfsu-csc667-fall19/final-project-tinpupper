@@ -31,25 +31,22 @@ const Login = ({ dispatch, username, isLoggedIn }) => {
     // Make sure the proxy in package.json is set to:
     // "proxy": "http://167.172.249.188:3004"
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    const johnBody = {
-      username: "bob",
-      password: "123"
-    };
+    // const johnBody = {
+    //   username: "bob",
+    //   password: "123"
+    // };
 
-    console.log(body);
+    // console.log(body);
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // JOHN:
     // Insert my johnBody in here if you want to test it
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    axios.post("/auth/login", johnBody, options).then(response => {
+    axios.post("/auth/login", body, options).then(response => {
       // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       // JOHN:
       // Uncomment these two line to see the user information if you used my johnBody above
       // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      console.log("JOHN USER: ");
-      console.log(response.data.user);
-
       console.log(response);
       // console.log(response.data.error);
       if (response.data.error === "Bad user information") {
@@ -67,10 +64,7 @@ const Login = ({ dispatch, username, isLoggedIn }) => {
         // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         document.cookie = `username=${username}`;
         document.cookie = `password=${md5(password)}`;
-
-        debugger;
         let value = true;
-
         dispatch(setIsLoggedIn(value));
       }
     });
