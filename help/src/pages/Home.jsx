@@ -27,13 +27,16 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * JOHN:											   *
      * Route: http://167.172.249.188:3004/auth/cookies     *
+     * 													   *
      * I added a cookies route in the backend for clarity  *
+     * 													   *
+     * I'm guessing we should show a 400 Unauthorized page *
+     * If they aren't logged in							   *
      * 													   *
      * DELETE THIS COMMENT BOX IF NO LONGER NEEDED         *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Axios.post("/auth/cookies", {}, options).then(res => {
       console.log("Res from auth", res);
-      console.log(`HOME: ${res}`);
       if (res.data.valid === true) {
         let value = true;
         dispatch(setIsLoggedIn(value));
@@ -56,6 +59,20 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
     //         setNames(res.data);
     //       })
     //       .catch(console.log);
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * JOHN:											   *
+     * Route: http://167.172.249.188:3004/restaurant       *
+     *  												   *
+     * Here's an API request to get all test restaurants   *
+     * if you really want to make an API call  			   *
+     * 													   *
+     * DELETE THIS COMMENT BOX IF NO LONGER NEEDED         *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    Axios.get("/restaurant", options).then(res => {
+      console.log("JOHN RESTAURANT DATA:");
+      console.log(res.data);
+    });
   }, []);
 
   console.log(isLoggedIn);
@@ -85,6 +102,11 @@ const Home = ({ dispatch, username, isLoggedIn }) => {
                 Some quick example text to build on the card title and make up
                 the bulk of the card's content.
               </Card.Text>
+              {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
+              {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
+              {/* JOHN (WARNING): onClick will fail since <Link to="/writereview" /> is not a javascript statement  */}
+              {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
+              {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
               <Button variant="primary" onClick={<Link to="/writereview" />}>
                 Write a review
               </Button>

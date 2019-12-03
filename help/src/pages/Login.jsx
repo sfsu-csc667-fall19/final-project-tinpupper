@@ -1,32 +1,51 @@
 import React from "react";
 import { Card, Nav, Button } from "react-bootstrap";
 import md5 from "md5";
-import {Redirect} from "react-router-dom";
-import {connect} from "react-redux";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import axios from "axios";
-import {setUsername, setIsLoggedIn} from "../redux/actions/userActions.js";
+import { setUsername, setIsLoggedIn } from "../redux/actions/userActions.js";
 
 const options = {
   withCredentials: true
 };
 
-const Login = ({dispatch, username, isLoggedIn}) => {
+const Login = ({ dispatch, username, isLoggedIn }) => {
   // const [username, se] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [errorMessage] = React.useState(
-    "Please enter a valid user name"
-  );
+  const [errorMessage] = React.useState("Please enter a valid user name");
   const [error, setError] = React.useState(false);
 
   const signInUser = () => {
     console.log(username);
+
     const body = {
       username,
       password: md5(password)
     };
 
+    // JOHN:
+    // This is a test user that exists in my mock database.
+    // Feel free to put this in as the body to test it!
+    // Make sure the proxy in package.json is set to:
+    // "proxy": "http://167.172.249.188:3004"
+    const johnBody = {
+      username: "bob",
+      password: "123"
+    };
+
     console.log(body);
+
+    // JOHN:
+    // Insert my johnBody in here if you want to test it
     axios.post("/auth/login", body, options).then(response => {
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      // JOHN:
+      // Uncomment these two line to see the user information if you used my johnBody above
+      // console.log("JOHN USER: ");
+      // console.log(response.data.user);
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
       console.log(response);
       // console.log(response.data.error);
       if (response.data.error === "Bad user information") {
@@ -36,8 +55,13 @@ const Login = ({dispatch, username, isLoggedIn}) => {
       }
       if (response.data.message === "Successfully authenticated") {
         console.log("After authentication", username);
-        document.cookies = `username = ${username}`;
-        document.cookies = `password = ${md5(password)}`
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        // JOHN:
+        // There shouldnt be a space between the '=' sign so I removed those.
+        // Whether that matters or not I didn't check, but this is the how the API reference writes it.
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        document.cookies = `username=${username}`;
+        document.cookies = `password=${md5(password)}`;
         debugger;
         let value = true;
 
@@ -110,10 +134,7 @@ const Login = ({dispatch, username, isLoggedIn}) => {
 
 const mapStateToProps = state => ({
   username: state.userReducer.username,
-  isLoggedIn: state.userReducer.isLoggedIn,
+  isLoggedIn: state.userReducer.isLoggedIn
 });
 
 export default connect(mapStateToProps)(Login);
-
-
-
