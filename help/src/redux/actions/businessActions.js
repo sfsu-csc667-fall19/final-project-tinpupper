@@ -7,7 +7,7 @@ const setBusinesses = businesses => ({
 
 export const listBusinesses = () => (dispatch, getState) => {
   axios.get('/list')
-    .then((res) => dispatch(setBusinesses( res.data)))
+    .then((res) => dispatch(setBusinesses(res.data)))
     .then(console.log);
 };
 

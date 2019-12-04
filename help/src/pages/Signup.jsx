@@ -1,21 +1,24 @@
 import React from "react";
 import { Card, Nav, Button } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import md5 from "md5";
 import axios from "axios";
+import {
+	setUsername,
+	setIsSignedUp,
+	setIsBusiness
+} from "../redux/actions/userActions.js";
 
 const options = {
 	withCredentials: true
 };
 
-const Signup = () => {
-	const [username, setUsername] = React.useState("");
+const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 	const [password, setPassword] = React.useState("");
-	const [isBusiness, setIsBusiness] = React.useState(false);
 	const [warningMessage] = React.useState(
 		"You cannot change this at a later stage"
 	);
-	const [isSignedUp, setIsSignedUp] = React.useState(false);
 
 	const registerUser = () => {
 		const body = {
@@ -23,14 +26,15 @@ const Signup = () => {
 			password: md5(password),
 			isBusiness
 		};
+		console.log(body);
+		debugger;
 
 		axios.post("/register", body, options).then(res => {
 			console.log(res);
-			console.log(res.message);
 			if (res.data.message === "Successfully registered user") {
-				setIsSignedUp(true);
-				
-			}	
+				dispatch(setIsSignedUp(true));
+			}
+			console.log("iss", isSignedUp);
 		});
 	};
 	return (
@@ -62,7 +66,7 @@ const Signup = () => {
 								<input
 									type="text"
 									onChange={e => {
-										setUsername(e.target.value);
+										dispatch(setUsername(e.target.value));
 									}}
 									required
 								/>
@@ -84,7 +88,7 @@ const Signup = () => {
 									type="checkbox"
 									value={isBusiness}
 									onChange={() => {
-										setIsBusiness(true);
+										dispatch(setIsBusiness(true));
 									}}
 								/>{" "}
 								Are you a business account?
@@ -107,4 +111,11 @@ const Signup = () => {
 	);
 };
 
-export default Signup;
+const mapStateToProps = state => ({
+	username: state.userReducer.username,
+	isLoggedIn: state.userReducer.isLoggedIn,
+	isBusiness: state.userReducer.isBusiness,
+	isSignedUp: state.userReducer.isSignedUp,
+});
+
+export default connect(mapStateToProps)(Signup);
