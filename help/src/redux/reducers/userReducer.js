@@ -2,14 +2,15 @@
 * @Author: aadityac15
 * @Date:   2019-11-27 23:56:55
 * @Last Modified by:   aadityac15
-* @Last Modified time: 2019-12-03 03:23:40
+* @Last Modified time: 2019-12-04 01:18:07
 */
 
 // Step 1 initialize state
 const INITIAL_STATE = {
   username: '',
   isLoggedIn: false,
-  isSignedUp: false
+  isSignedUp: false,
+  isBusiness: false,
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {

@@ -26,13 +26,15 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 			password: md5(password),
 			isBusiness
 		};
+		console.log(body);
+		debugger;
 
 		axios.post("/register", body, options).then(res => {
 			console.log(res);
-			console.log(res.message);
 			if (res.data.message === "Successfully registered user") {
 				dispatch(setIsSignedUp(true));
 			}
+			console.log("iss", isSignedUp);
 		});
 	};
 	return (
@@ -40,7 +42,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 			{isSignedUp ? (
 				<div>
 					Please wait while you're redirected.
-					<Redirect to="/home" />
+					<Redirect to="/login" />
 				</div>
 			) : (
 				<Card className="justify-content-center">
@@ -75,7 +77,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 								<input
 									type="password"
 									onChange={e => {
-										dispatch(setPassword(e.target.value));
+										setPassword(e.target.value);
 									}}
 									required
 								/>
@@ -112,7 +114,8 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 const mapStateToProps = state => ({
 	username: state.userReducer.username,
 	isLoggedIn: state.userReducer.isLoggedIn,
-	isBusiness: state.userReducer.isBusiness
+	isBusiness: state.userReducer.isBusiness,
+	isSignedUp: state.userReducer.isSignedUp,
 });
 
 export default connect(mapStateToProps)(Signup);

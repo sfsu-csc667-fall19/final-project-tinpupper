@@ -15,8 +15,8 @@ const options = {
 
 const App = ({ isLoggedIn, dispatch, isBusiness }) => {
   const logOutUser = () => {
-    // document.clearCookie("username");
-    // document.clearCookie("password");
+    document.clearCookie("username");
+    document.clearCookie("password");
     // dispatch(setIsLoggedIn(false));
     // window.location.href= "//";
   };

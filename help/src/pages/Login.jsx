@@ -10,14 +10,15 @@ const options = {
   withCredentials: true
 };
 
-const Login = ({ dispatch, username, isLoggedIn }) => {
+const Login = ({ dispatch, username, isLoggedIn, isSignedUp }) => {
   // const [username, se] = React.useState("");
+  // dispatch(setUsername(""));
   const [password, setPassword] = React.useState("");
   const [errorMessage] = React.useState("Please enter a valid user name");
   const [error, setError] = React.useState(false);
 
   const signInUser = () => {
-    console.log(username);
+    console.log("The username", username);
 
     const body = {
       username,
@@ -31,37 +32,17 @@ const Login = ({ dispatch, username, isLoggedIn }) => {
     // Make sure the proxy in package.json is set to:
     // "proxy": "http://167.172.249.188:3004"
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    // const johnBody = {
-    //   username: "bob",
-    //   password: "123"
-    // };
 
-    // console.log(body);
-
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    // JOHN:
-    // Insert my johnBody in here if you want to test it
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     axios.post("/auth/login", body, options).then(response => {
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      // JOHN:
-      // Uncomment these two line to see the user information if you used my johnBody above
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       console.log(response);
       // console.log(response.data.error);
       if (response.data.error === "Bad user information") {
         let value = true;
         setError(value);
-        dispatch(setUsername(""));
+        // dispatch(setUsername(""));
       }
       if (response.data.message === "Successfully authenticated") {
         console.log("After authentication", username);
-        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-        // JOHN:
-        // There shouldnt be a space between the '=' sign so I removed those.
-        // Whether that matters or not I didn't check, but this is the how the API reference writes it.
-        // Oh and its document.cookie not document.cookies. I've changed that below.
-        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         document.cookie = `username=${username}`;
         document.cookie = `password=${md5(password)}`;
         let value = true;
@@ -73,7 +54,7 @@ const Login = ({ dispatch, username, isLoggedIn }) => {
   return (
     <div className="display-flex center-align margin-top-2 justify-content-center">
       {isLoggedIn ? (
-        <Redirect to="/writereview" />
+        <Redirect to="/home" />
       ) : (
         <Card className="justify-content-center">
           <Card.Header>
@@ -88,6 +69,9 @@ const Login = ({ dispatch, username, isLoggedIn }) => {
             <Card.Title>
               <b>
                 <h2>Login</h2>
+                {isSignedUp && (
+                  <h4> Please login with the credentials you created! </h4>
+                )}
               </b>
             </Card.Title>
             <form action="#">
@@ -134,7 +118,8 @@ const Login = ({ dispatch, username, isLoggedIn }) => {
 
 const mapStateToProps = state => ({
   username: state.userReducer.username,
-  isLoggedIn: state.userReducer.isLoggedIn
+  isLoggedIn: state.userReducer.isLoggedIn,
+  isSignedUp: state.userReducer.isSignedUp
 });
 
 export default connect(mapStateToProps)(Login);
