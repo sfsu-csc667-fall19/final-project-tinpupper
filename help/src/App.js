@@ -27,7 +27,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        <NavLink to="/writereview">Write a review </NavLink>
+        {!isBusiness &&(<NavLink to="/writereview">Write a review </NavLink>)}
         <NavLink to="/settings"> Settings </NavLink>
         {isBusiness &&<NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
@@ -45,7 +45,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
       <Switch>
         <Route path="/writereview" />
         <Route path="/settings" />
-        <Route path="/business" />
+        <Route path="/business"/>
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
 
