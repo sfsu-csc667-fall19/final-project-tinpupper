@@ -21,6 +21,11 @@ export const setNewBusiness = newBusiness=> ({
   newBusiness,
 });
 
+export const setIsRedirect = isRedirect=> ({
+  type: 'SET_REDIRECT',
+  isRedirect
+});
+
 export const updateBusiness = () => (dispatch, getState) => {
   const {_id , newBusiness} = getState().businessReducer;
  // const _id = getState().notesReducer._id;
