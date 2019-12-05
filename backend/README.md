@@ -3,8 +3,9 @@
 - [Cookie](#Cookie)
 - [Login](#Login)
 - [Register](#Register)
-- [User](#User)
 - [Restaurant](#Restaurant)
+- [Review](#Review)
+- [User](#User)
 
 TODO:
 Update user response to have restaurants ID
@@ -318,3 +319,146 @@ N/A
   id: '219308s90f0nd98xdfioue'
 }
 ```
+
+---
+
+## Review
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/review/:id
+```
+
+**Response:**
+
+```
+{
+  message: "Found review",
+  userId: "alwkchkh879172897",
+  restaurantId: "hkchichz8hch89ey9hui"
+  text: "Wow this restaurant is a restaurant",
+}
+```
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/review
+```
+
+**Response:**
+
+```
+{
+  message: "Found review",
+  reviews: [
+    {
+      userId: "alwkchkh879172897",
+      restaurantId: "hkchichz8hch89ey9hui"
+      text: "Wow this restaurant is a restaurant"
+    }
+  ]
+}
+```
+
+**Method:** Post
+
+**Body:**
+
+```
+{
+  message: "Successfully posted review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is a review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**URL:**
+
+```
+/review
+```
+
+**Response:**
+
+```
+{
+  message: "Successfully posted review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is a review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**Method:** Put
+
+**Body:**
+
+```
+{
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is an updated review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**URL:**
+
+```
+/review/:id
+```
+
+**Response:**
+
+```
+{
+  message: "Updated review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is an updated review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**Method:** Delete
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/review/:id
+```
+
+**Response:**
+
+```
+{
+  message: "Deleted review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is an updated review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
