@@ -7,6 +7,7 @@ const DEFAULT_STATE = {
         "Popeyes"],
     _id: '',
     newBusiness: '',
+    isRedirect: false,
 };
 //THIS IS TEMPORARY IN ORDER TO DISPLAY SOMETHING
 //will be replaced with an axios call and an empty array for businesses
@@ -27,6 +28,11 @@ const businessReducer = (state = DEFAULT_STATE, action) => {
             return {
                 ...state,
                 businesses: action.businesses
+            }
+        case 'SET_REDIRECT' :
+            return {
+                ...state,
+                isRedirect: action.isRedirect
             }
         default:
             return state;

@@ -1,19 +1,28 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect, Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
-import { listBusinesses } from "../redux/actions/businessActions";
+import { setIsRedirect, listBusinesses } from "../redux/actions/businessActions";
 
 const options = {
 	withCredentials: true
 };
 
-const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
+const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect }) => {
 	React.useEffect(() => {
 		dispatch(listBusinesses());
 	}, []);
+
+	if (isRedirect) {
+		console.log('TEST')
+		dispatch(setIsRedirect(false));
+		return (
+		<Redirect to="/writereview"/>
+		)
+	}
+	
 
 	return (
 		<div>
@@ -48,7 +57,11 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 							{!isBusiness &&
 							<Button
 								variant="primary"
-								onClick={<Link to="/writereview" />}
+								onClick={() => {
+									console.log(isRedirect)
+									dispatch(setIsRedirect(true))
+								}
+								}
 							>
 								Write a review
 							</Button>
@@ -64,7 +77,8 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 const mapStateToProps = state => ({
 	businesses: state.businessReducer.businesses,
 	isLoggedIn: state.userReducer.isLoggedIn,
-	isBusiness: state.userReducer.isBusiness
+	isBusiness: state.userReducer.isBusiness,
+	isRedirect: state.businessReducer.isRedirect,
 });
 
-export default connect(mapStateToProps)(Home);
+export default withRouter(connect(mapStateToProps)(Home));
