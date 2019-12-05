@@ -1,71 +1,79 @@
 import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { Redirect, Link, withRouter } from "react-router-dom";
+import { Redirect, Link } from "react-rouater-dom";
 import { connect } from "react-redux";
-import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
-import { setIsRedirect, listBusinesses } from "../redux/actions/businessActions";
+import { setIsLoggedIn, setUsername } from "../redux/actions/userActions.js";
+import Axios from "axios";
 
 const options = {
-	withCredentials: true
-};
+	withCredentials : true
+}
 
-const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect }) => {
+const Home = ({ dispatch, username, isLoggedIn }) => {
+	const [names, setNames] = React.useState([
+		"Mcdonalds",
+		"Hardies jr.",
+		"KFC",
+		"Chipotle",
+		"Panda Express"
+	]);
+	//THIS IS TEMPORARY IN ORDER TO DISPLAY SOMETHING
+	//will be replaced with below axios call
+	//
+	// Check cookies
 	React.useEffect(() => {
-		dispatch(listBusinesses());
+		Axios.get("/auth").then(res => {
+			console.log("Res from auth",res);
+			if (res.data.valid === true) {
+				let value = true;
+				dispatch(setIsLoggedIn(value));
+				dispatch(setUsername(res.data.user));
+			}
+		});
 	}, []);
 
-	if (isRedirect) {
-		console.log('TEST')
-		dispatch(setIsRedirect(false));
-		return (
-		<Redirect to="/writereview"/>
-		)
-	}
-	
+	React.useEffect(() => {
+		Axios.get("/list")
+			.then(res => {
+				setNames(res.data);
+			})
+			.catch(console.log);
+	}, []);
+	console.log(isLoggedIn);
 
 	return (
 		<div>
 			<div>
 				<h2>HELP! A yelp like application.</h2>
 			</div>
-			<div>
-				{isLoggedIn && !isBusiness && (
-					<h3>
-						Hello, {username} <br />
-					</h3>
-				)}
-				{isLoggedIn && isBusiness && (
-					<h3>Welcome to your business account, {username}</h3>
-				)}
-			</div>
-
-			{businesses.map((business, i) => (
+			{isLoggedIn && (
+				<h3>
+					Hello, {username} <br />
+				</h3>
+			)}
+			{names.map((name, i) => (
 				<div key={i} className="display-row padding-2-p">
 					<Card style={{ width: "18rem" }}>
 						<Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
 						{/* will be replaced by business.img if thats doable*/}
 						<Card.Body>
-							<Card.Title>{business}</Card.Title>{" "}
+							<Card.Title>{name}</Card.Title>{" "}
 							{/* will be replaced by business.name or something*/}
 							<Card.Text>
+								{" "}
 								{/* will be replaced by business.text */}
 								Some quick example text to build on the card
 								title and make up the bulk of the card's
 								content.
 							</Card.Text>
-							{!isBusiness &&
 							<Button
 								variant="primary"
-								onClick={() => {
-									console.log(isRedirect)
-									dispatch(setIsRedirect(true))
-								}
-								}
+								onClick={<Link to="/writereview" />}
 							>
 								Write a review
 							</Button>
-							}
 						</Card.Body>
 					</Card>
 				</div>
@@ -75,10 +83,8 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 };
 
 const mapStateToProps = state => ({
-	businesses: state.businessReducer.businesses,
-	isLoggedIn: state.userReducer.isLoggedIn,
-	isBusiness: state.userReducer.isBusiness,
-	isRedirect: state.businessReducer.isRedirect,
+	username: state.userReducer.username,
+	isLoggedIn: state.userReducer.isLoggedIn
 });
 
-export default withRouter(connect(mapStateToProps)(Home));
+export default connect(mapStateToProps)(Home);
