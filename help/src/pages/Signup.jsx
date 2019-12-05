@@ -19,6 +19,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 	const [warningMessage] = React.useState(
 		"You cannot change this at a later stage"
 	);
+	const[isBusinessLocal, setIsBusinessLocal] = React.useState(false);
 
 	const registerUser = () => {
 		const body = {
@@ -33,6 +34,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 			console.log(res);
 			if (res.data.message === "Successfully registered user") {
 				dispatch(setIsSignedUp(true));
+				dispatch(setIsBusiness(isBusinessLocal));
 			}
 			console.log("iss", isSignedUp);
 		});
@@ -88,7 +90,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 									type="checkbox"
 									value={isBusiness}
 									onChange={() => {
-										dispatch(setIsBusiness(true));
+										setIsBusinessLocal(true);
 									}}
 								/>{" "}
 								Are you a business account?

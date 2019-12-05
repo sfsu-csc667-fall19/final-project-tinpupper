@@ -4,7 +4,7 @@ import md5 from "md5";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "axios";
-import { setUsername, setIsLoggedIn } from "../redux/actions/userActions.js";
+import { setUsername, setIsLoggedIn, setIsSignedUp } from "../redux/actions/userActions.js";
 
 const options = {
   withCredentials: true
@@ -16,6 +16,11 @@ const Login = ({ dispatch, username, isLoggedIn, isSignedUp }) => {
   const [password, setPassword] = React.useState("");
   const [errorMessage] = React.useState("Please enter a valid user name");
   const [error, setError] = React.useState(false);
+
+  React.useEffect(() => {
+
+  }, [])
+
 
   const signInUser = () => {
     console.log("The username", username);
@@ -81,6 +86,7 @@ const Login = ({ dispatch, username, isLoggedIn, isSignedUp }) => {
                   required
                   onChange={e => {
                     dispatch(setUsername(e.target.value));
+
                   }}
                   type="text"
                 />
