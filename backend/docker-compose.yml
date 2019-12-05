@@ -34,6 +34,20 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+  user:
+    container_name: userServer
+    image: john/final667
+    build: .
+    command: ['node', './services/userService.js']
+    depends_on: ['redisServer', 'kafka']
+    environment:
+      - REDISHOST=redisServer
+      - DOMAIN=user
+      - NODE_ENV=prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
   auth:
     container_name: authService
     image: john/final667

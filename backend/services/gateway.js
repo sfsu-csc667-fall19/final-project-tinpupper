@@ -98,6 +98,21 @@ app.all(`/auth*`, (req, res) => {
 });
 
 /* * * * * * * * * *
+ * USER    *
+ * * * * * * * * * */
+app.all(`/user*`, (req, res) => {
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://user:3010',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3010',
+    });
+  }
+});
+
+/* * * * * * * * * *
  * REGISTER        *
  * * * * * * * * * */
 app.all(`/register*`, (req, res) => {
