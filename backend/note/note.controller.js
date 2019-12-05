@@ -54,7 +54,7 @@ const getNote = async (req, res) => {
   const { id } = req.params;
   const received = await Note.findById(id).exec();
 
-  if (!received) message = `Note does not exits for ${id}`;
+  if (!received) message = `Note does not exist for ${id}`;
 
   res.status(200).send({
     message,
