@@ -34,9 +34,9 @@ app.use(morgan());
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
  * REGISTER USER (NOT USED; LOOK AT REGISTERSERVER)   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * */
-app.post('/user', (req, res) => {
-  res.send('Use /register route for registation');
-});
+// app.post('/user', (req, res) => {
+//   res.send('Use /register route for registation');
+// });
 
 /* * * * * * * * * * * *
  * UPDATE SINGLE USER  *
@@ -65,13 +65,13 @@ app.get('/user/:id', async (req, res) => {
   let message = 'Received user';
   const { id } = req.params;
   //gets user id
-  const received = await User.findbyID(id).exec();
+  const received = await User.findById(id).exec();
   //finds user fromn id variable -> received
   if (!received) message = `User does not exist for ${id}`;
   //error message if not received
   res.status(200).send({
     message,
-    user: received,
+    users: received,
   });
 });
 

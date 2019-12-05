@@ -12,7 +12,7 @@ const restaurantSchema = new mongoose.Schema({
   },
   reviews: {
     required: true,
-    type: [Number],
+    type: [mongoose.Schema.Types.ObjectId],
   },
 });
 
