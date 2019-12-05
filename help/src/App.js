@@ -13,7 +13,7 @@ const options = {
   withCredentials: true
 };
 
-const App = ({ isLoggedIn, dispatch, isBusiness }) => {
+const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
   const logOutUser = () => {
     document.clearCookie("username");
     document.clearCookie("password");
@@ -58,6 +58,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
 const mapStateToProps = state => ({
   isLoggedIn: state.userReducer.isLoggedIn,
   isBusiness: state.userReducer.isBusiness,
+  isSignedUp: state.userReducer.isSignedUp,
 });
 
 export default connect(mapStateToProps)(App);
