@@ -41,51 +41,66 @@ app.post('/user', (req, res) => {
 /* * * * * * * * * * * *
  * UPDATE SINGLE USER  *
  * * * * * * * * * * * */
-app.put('/user/:id', (req, res) => {
-  /**
-   * 1) Get the user's id from req.params
-   * 2) Update user information from the database using this function
-   *    - User.findByIdAndUpdate( id, { body }, func(err, res) )
-   *    - Go to /note/note.controller.js and CTRL+F "Note.findByIdAndUpdate" for an example usage
-   * 3) Send back responses properly (see documentation in USER section for PUT method)
-   */
+app.put('/user/:id', async (req, res) => {
+  let message = 'Updated user';
+  const { id } = req.params;
+  //gets user's id
+  const { username } = req.body;
+  //and username from body
+  const updated = await User.findByIdAndUpdate(id, { username }, { new: true });
+  //finds user by id and updates the username
+  if (!updated) message = 'Unable to update user';
+  //if update failed - message
+  res.status(200).send({
+    //response sent to front end
+    message,
+    user: updated,
+  });
 });
 
 /* * * * * * * * * *
  * GET SINGLE USER *
  * * * * * * * * * */
-app.get('/user/:id', (req, res) => {
-  /**
-   * 1) Get the user's id from req.params
-   * 2) Get user information from the database using this function
-   *    - User.findById( id, func(err, res) )
-   *    - Go to /note/note.controller.js and CTRL+F "Note.findById" for an example usage
-   * 3) Send back responses properly (see documentation in USER section for GET method)
-   */
+app.get('/user/:id', async (req, res) => {
+  let message = 'Received user';
+  const { id } = req.params;
+  //gets user id
+  const received = await User.findbyID(id).exec();
+  //finds user fromn id variable -> received
+  if (!received) message = `User does not exist for ${id}`;
+  //error message if not received
+  res.status(200).send({
+    message,
+    user: received,
+  });
 });
 
 /* * * * * * * * * *
  * GET ALL USERS   *
  * * * * * * * * * */
-app.get('/user', (req, res) => {
-  /**
-   * 1) Get user information from the database using this function
-   *    - User.find({}, func(err, res) )
-   *    - Go to /note/note.controller.js and CTRL+F "Note.find({})" for an example usage
-   * 2) Send back responses properly (see documentation in USER section for GET method)
-   */
+app.get('/user', async (req, res) => {
+  let message = 'Successfully received all users';
+  const received = await User.find({}).exec();
+  //gets every user from the database
+
+  if (!received) message = 'Unable to get all users';
+
+  res.status(200).send({
+    message,
+    user: received,
+  });
 });
 
 /* * * * * * * * * *
  * DELETE USER     *
  * * * * * * * * * */
-app.delete('/user/:id', (req, res) => {
-  /**
-   * 1) Get user information from the database using this function
-   *    - User.findByIdAndRemove( id, func(err, res) )
-   *    - Go to /note/note.controller.js and CTRL+F "Note.findByIdAndRemove" for an example usage
-   * 2) Send back responses properly (see documentation in USER section for DELETE method)
-   */
+app.delete('/user/:id', async (req, res) => {
+  let message = 'Successfully deleted user';
+  const { id } = req.params;
+  //get id
+  const remove = await User.findByIdAndRemove(id, {
+    useFindandModify: false,
+  }).exec();
 });
 
 app.listen(port, () => console.log(`userService app listening on port ${port}!`));
