@@ -61,7 +61,7 @@ app.put('/user/:id', async (req, res) => {
 /* * * * * * * * * *
  * GET SINGLE USER *
  * * * * * * * * * */
-app.get('/user/:id', (req, res) => {
+app.get('/user/:id', async (req, res) => {
 
    let message = 'Received user';
    const { id } = req.params;
@@ -80,7 +80,7 @@ app.get('/user/:id', (req, res) => {
 /* * * * * * * * * *
  * GET ALL USERS   *
  * * * * * * * * * */
-app.get('/user', (req, res) => {
+app.get('/user', async (req, res) => {
   let message = 'Successfully received all users';
   const received = await User.find({}).exec(); 
   //gets every user from the database
@@ -96,7 +96,7 @@ app.get('/user', (req, res) => {
 /* * * * * * * * * *
  * DELETE USER     *
  * * * * * * * * * */
-app.delete('/user/:id', (req, res) => {
+app.delete('/user/:id', async (req, res) => {
   let message = 'Successfully deleted user';
   const { id } = req.params;
   //get id
