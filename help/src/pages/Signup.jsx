@@ -28,7 +28,6 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 			isBusiness
 		};
 		console.log(body);
-		debugger;
 
 		axios.post("/register", body, options).then(res => {
 			console.log(res);
@@ -36,7 +35,6 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 				dispatch(setIsSignedUp(true));
 				dispatch(setIsBusiness(isBusinessLocal));
 			}
-			console.log("iss", isSignedUp);
 		});
 	};
 	return (

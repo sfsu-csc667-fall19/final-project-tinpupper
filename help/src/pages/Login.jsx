@@ -50,6 +50,7 @@ const Login = ({ dispatch, username, isLoggedIn, isSignedUp }) => {
         console.log("After authentication", username);
         document.cookie = `username=${username}`;
         document.cookie = `password=${md5(password)}`;
+        console.log("Response after authentication",response)
         let value = true;
         dispatch(setIsLoggedIn(value));
       }
