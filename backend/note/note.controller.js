@@ -163,6 +163,10 @@ const authenticate = (req, res, next) => {
     if (NODE_ENV === 'prod') {
       console.log('Before prod');
       const value = await verifyWithAuthServer('auth', next, key, body, res);
+      if (value === true) {
+        console.log('value true return next middleware');
+        return next();
+      }
       console.log('VALUE', value);
       return res.send(value);
       console.log('after prod');
@@ -185,7 +189,7 @@ const verifyWithAuthServer = async (domain, next, key, body, res) => {
       if (resInner.data.valid) {
         console.log(`Valid successful`);
         client.set(key, true);
-        return next(); // Next middleware
+        return true; // Next middleware
       }
 
       // Auth server says user is invalid, don't return next middleware
