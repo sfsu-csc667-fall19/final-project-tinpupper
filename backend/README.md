@@ -367,7 +367,7 @@ N/A
 
 ```
 {
-  message: "Found review",
+  message: "Found reviews",
   reviews: [
     {
       userId: "alwkchkh879172897",
