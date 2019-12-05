@@ -25,7 +25,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 		const body = {
 			username,
 			password: md5(password),
-			isBusiness
+			isBusiness: isBusinessLocal,
 		};
 		console.log(body);
 
