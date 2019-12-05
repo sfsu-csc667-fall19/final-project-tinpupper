@@ -62,7 +62,7 @@ app.put('/user/:id', async (req, res) => {
  * GET SINGLE USER *
  * * * * * * * * * */
 app.get('/user/:id', (req, res) => {
-  
+
    let message = 'Received user';
    const { id } = req.params;
    //gets user id
@@ -82,7 +82,8 @@ app.get('/user/:id', (req, res) => {
  * * * * * * * * * */
 app.get('/user', (req, res) => {
   let message = 'Successfully received all users';
-  const received = await User.find({}).exec(); //gets every user from the database
+  const received = await User.find({}).exec(); 
+  //gets every user from the database
 
   if(!received) message = 'Unable to get all users';
 
@@ -98,6 +99,7 @@ app.get('/user', (req, res) => {
 app.delete('/user/:id', (req, res) => {
   let message = 'Successfully deleted user';
   const { id } = req.params;
+  //get id
   const remove = await User.findByIdAndRemove(id, {
     useFindandModify: false,
   }).exec();
