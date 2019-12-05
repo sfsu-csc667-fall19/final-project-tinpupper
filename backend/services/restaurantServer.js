@@ -107,16 +107,21 @@ app.put('/restaurant/:id', (req, res) => {
  * DELETE RESTAURANT     *
  * * * * * * * * * * * * */
 app.delete(`/restaurant/:id`, (req, res) => {
-  /**
-   * Check the backend documentation on our team's GitHub on how the body is received and how to respond
-   *
-   * 1) Get the restaurant's id from req.params
-   * 2) Delete this from the database using this function
-   *    - Restaurant.findByIdAndRemove( id, func(err, res) )
-   *    - Go to /backend/services/userService.js and CTRL+F "User.findByIdAndRemove" for an example usage
-   * 3) Send back responses properly (see documentation in RESTAURANT section for DELETE method)
-   */
-  res.send('need to make');
+  const { id } = req.params;
+  //get id for restraurant
+  let message = 'Successfully deleted restaurant';
+  //default message that res was deleted
+  const remove = await Restaurant.findByIdAndRemove(id, { useFindandModify: false, }).exec();
+  //delete from data base
+
+  if(!remove) message = 'Unable to remove restaurant';
+  //message if the delete failed
+
+   //send back responses
+  res.status(200).send({
+    message, 
+    restaurant: removed,
+  });
 });
 
 app.listen(port, () => console.log(`RESTAURANT: ${port}!`));
