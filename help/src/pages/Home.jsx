@@ -1,9 +1,14 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import axios from "axios";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
+import {
+	setIsLoggedIn,
+	setUsername,
+	setIsBusiness
+} from "../redux/actions/userActions";
 import { listBusinesses } from "../redux/actions/businessActions";
 
 const options = {
@@ -12,6 +17,14 @@ const options = {
 
 const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 	React.useEffect(() => {
+		axios.post("/auth/cookies", options).then(res => {
+			console.log(res);
+			if (res.data.message === "Successfully authenticated") {
+				dispatch(setIsBusiness(res.data.user.isBusiness));
+				dispatch(setUsername(res.data.user.username));
+				dispatch(setIsLoggedIn(true));
+			}
+		});
 		dispatch(listBusinesses());
 	}, []);
 
@@ -45,14 +58,14 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 								title and make up the bulk of the card's
 								content.
 							</Card.Text>
-							{!isBusiness &&
-							<Button
-								variant="primary"
-								onClick={<Link to="/writereview" />}
-							>
-								Write a review
-							</Button>
-							}
+							{!isBusiness && (
+								<Button
+									variant="primary"
+									onClick={<Link to="/writereview" />}
+								>
+									Write a review
+								</Button>
+							)}
 						</Card.Body>
 					</Card>
 				</div>
@@ -64,7 +77,8 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 const mapStateToProps = state => ({
 	businesses: state.businessReducer.businesses,
 	isLoggedIn: state.userReducer.isLoggedIn,
-	isBusiness: state.userReducer.isBusiness
+	isBusiness: state.userReducer.isBusiness,
+	username: state.userReducer.username
 });
 
 export default connect(mapStateToProps)(Home);

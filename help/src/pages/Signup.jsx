@@ -28,7 +28,7 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 			isBusiness: isBusinessLocal,
 		};
 		console.log(body);
-
+		
 		axios.post("/register", body, options).then(res => {
 			console.log(res);
 			if (res.data.message === "Successfully registered user") {
