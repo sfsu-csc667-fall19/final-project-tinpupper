@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   restaurants: {
-    type: [Number],
+    type: [mongoose.Schema.Types.ObjectId],
   },
   isBusiness: {
     required: true,
