@@ -103,11 +103,14 @@ const cookiesNotNull = (req, res, next) => {
   console.log('Inside cookiesNotNull middleware');
   req.hasCookies = false;
 
+  console.log('COOKIES: ', req.cookies);
+
   // Invalid cookies
   if (!req.cookies.username || !req.cookies.password) {
     // Continue if they have a body
     if (req.body.username && req.body.password) return next();
     console.error('FAILED COOKIESNOTNULL CHECK', req.body);
+    console.error('CHECK COOKIES: ', req.cookies);
     console.log(req.cookies);
     return res.status(400).send({ error: 'No valid cookies or body authorization' });
   }

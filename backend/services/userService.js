@@ -94,7 +94,7 @@ app.get('/user', async (req, res) => {
 /* * * * * * * * * *
  * PRIVATE POST: update review user  *
  * * * * * * * * * */
-app.get('/user/updateReview', async (req, res) => {
+app.post('/user/updateReview', (req, res) => {
   console.log('inside user/addReview');
   const { userId, reviewId } = req.body;
 
