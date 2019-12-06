@@ -77,7 +77,7 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 								variant="primary"
 								onClick={() => {
 									dispatch(setCurrentBusiness(business.name))
-									console.log(currentBusiness)
+									console.log(businesses)
 									dispatch(setIsRedirect(true))
 								}
 								}
