@@ -28,16 +28,19 @@ consumerPost.on('message', message => {
   console.log('Posting to database...');
   const data = JSON.parse(message.value);
 
-  Restaurant.create({ name: data.name, description: data.description }, (err, res) => {
-    if (err) {
-      console.error('Unable to post restaurant');
-    } else {
-      console.log('* * * * * * * * * * * *');
-      console.log('Created restaurant: ', data.name);
-      console.log('Restaurant description: ', data.description);
-      console.log('* * * * * * * * * * * *');
-    }
-  });
+  Restaurant.create(
+    { name: data.name, description: data.description, ownerId: data.ownerId, imageUrl: data.imageUrl },
+    (err, res) => {
+      if (err) {
+        console.error('Unable to post restaurant');
+      } else {
+        console.log('* * * * * * * * * * * *');
+        console.log('Created restaurant: ', data.name);
+        console.log('Restaurant description: ', data.description);
+        console.log('* * * * * * * * * * * *');
+      }
+    },
+  );
 });
 
 consumerDelete.on(

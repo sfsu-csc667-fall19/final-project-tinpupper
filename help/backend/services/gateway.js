@@ -83,6 +83,23 @@ app.all(`/notes*`, (req, res) => {
 });
 
 /* * * * * * * * * *
+ * REVIEW SERVICE    *
+ * * * * * * * * * */
+app.all(`/review*`, (req, res) => {
+  console.log(req.cookies);
+  console.log(req.path);
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://review:3013',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3013',
+    });
+  }
+});
+
+/* * * * * * * * * *
  * LOGIN/AUTH      *
  * * * * * * * * * */
 app.all(`/auth*`, (req, res) => {
@@ -93,6 +110,21 @@ app.all(`/auth*`, (req, res) => {
   } else {
     apiProxy.web(req, res, {
       target: 'http://localhost:3002',
+    });
+  }
+});
+
+/* * * * * * * * * *
+ * USER    *
+ * * * * * * * * * */
+app.all(`/user*`, (req, res) => {
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://user:3010',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3010',
     });
   }
 });
