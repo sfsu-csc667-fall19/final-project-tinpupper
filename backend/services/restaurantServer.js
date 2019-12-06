@@ -2,8 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const axios = require('axios');
+const cookieParser = require('cookie-parser');
 const connect = require('../mongo/connect');
 const Restaurant = require('../models/restaurant.model');
+const User = require('../models/user.model');
 const KafkaProducer = require('../helpers/KafkaProducer');
 const { RESTAURANT_DELETE, RESTAURANT_POST, RESTAURANT_UPDATE } = require('../helpers/KafkaTopicNames');
 
@@ -31,6 +34,7 @@ connect(mongoUrl)
   });
 
 app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -90,10 +94,29 @@ app.get(`/restaurant/:id`, async (req, res) => {
  * * * * * * * * * * * * */
 app.post(`/restaurant`, (req, res) => {
   const { name, description, ownerId } = req.body;
+  console.log('before cookies');
+  const { username, password } = req.cookies;
   const imageUrl =
     'https://cdn2.atlantamagazine.com/wp-content/uploads/sites/4/2019/07/RestaurantEugene01_courtesy.jpg';
-  producerPost.send({ name, description, ownerId, imageUrl });
-  res.send({ ownerId, name, description, imageUrl, message: 'Creating restaurant...' });
+
+  // Also need to get the logged in user _id from MongoDB
+  // 1) MongoDB Search username and password combination to get that user
+  console.log(`Finding ${username} and ${password}`);
+  User.find({ username, password }, (err, user) => {
+    if (err) {
+      res.send({ error: err, message: 'failed to post' });
+    }
+    console.log(user);
+    producerPost.send({ name, description, ownerId: user[0]._id, imageUrl });
+    res.send({
+      ownerId: user[0]._id,
+      name,
+      description,
+      imageUrl,
+      loggedIn: { username: user[0].username, password: user[0].password },
+      message: 'Creating restaurant...',
+    });
+  });
 });
 
 /* * * * * * * * * * * * *
