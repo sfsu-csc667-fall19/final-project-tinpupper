@@ -3,6 +3,7 @@ import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import Reviews from "./pages/Reviews";
 import UserLogin from "./pages/UserLogin";
 import axios from "axios";
 import "./App.css";
@@ -27,7 +28,6 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        {!isBusiness && <NavLink to="/writereview">Write a review </NavLink>}
         <NavLink to="/settings"> Settings </NavLink>
         {isBusiness && <NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
@@ -43,7 +43,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         </button>
       </div>
       <Switch>
-        <Route path="/writereview" />
+        <Route path="/writereview" component ={Reviews}/>
         <Route path="/settings" />
         <Route path="/business" />
         <Route path="/login" component={Login} />

@@ -2,20 +2,36 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect, Link, withRouter} from "react-router-dom";
 import { connect } from "react-redux";
-import {
-	setIsLoggedIn,
-	setUsername,
-	setIsBusiness
-} from "../redux/actions/userActions";
-import { listBusinesses } from "../redux/actions/businessActions";
+import { setIsLoggedIn, setUsername, setIsBusiness } from "../redux/actions/userActions";
+import { setIsRedirect, listBusinesses, setCurrentBusiness } from "../redux/actions/businessActions";
 
 const options = {
 	withCredentials: true
 };
 
-const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
+// Array of businesses
+const mockData = [
+	{
+		name: "Mcdonald's",
+		description: "I am mcdonald wow",
+	},
+	{
+		name: "Burger King", 
+		description: "Eat our burgers or else"
+	},
+	{
+		name: "Chipotle", 
+		description: "Eat our food"
+	},
+	{
+		name: "KFC", 
+		description: "Eat my chicken or else"
+	}
+]
+
+const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect, currentBusiness }) => {
 	React.useEffect(() => {
 		axios.post("/auth/cookies", options).then(res => {
 			console.log(res);
@@ -27,6 +43,15 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 		});
 		dispatch(listBusinesses());
 	}, []);
+
+	if (isRedirect) {
+		console.log(isRedirect)
+		dispatch(setIsRedirect(false));
+		return (
+		<Redirect to="/writereview"/>
+		)
+	}
+	
 
 	return (
 		<div>
@@ -44,28 +69,49 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username }) => {
 				)}
 			</div>
 
-			{businesses.map((business, i) => (
+			{mockData.map((business, i) => (
 				<div key={i} className="display-row padding-2-p">
 					<Card style={{ width: "18rem" }}>
 						<Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
 						{/* will be replaced by business.img if thats doable*/}
 						<Card.Body>
-							<Card.Title>{business}</Card.Title>{" "}
+							<Card.Title>{business.name}</Card.Title>{" "}
 							{/* will be replaced by business.name or something*/}
 							<Card.Text>
 								{/* will be replaced by business.text */}
-								Some quick example text to build on the card
-								title and make up the bulk of the card's
-								content.
+								{business.description}
 							</Card.Text>
-							{!isBusiness && (
+							{!isBusiness ?
+							<Button
+								variant="primary"
+								onClick={() => {
+									dispatch(setCurrentBusiness(business.name))
+									console.log(businesses)
+									dispatch(setIsRedirect(true))
+								}
+								}
+							>
+							
+								Write a review 
+
+							</Button>
+							: (
+
 								<Button
-									variant="primary"
-									onClick={<Link to="/writereview" />}
-								>
-									Write a review
-								</Button>
-							)}
+								variant="primary"
+								onClick={() => {
+									dispatch(setCurrentBusiness(business.name))
+									console.log(businesses)
+									dispatch(setIsRedirect(true))
+								}
+								}
+							>
+							
+								Read review 
+
+							</Button>
+								)
+							}
 						</Card.Body>
 					</Card>
 				</div>
@@ -78,7 +124,10 @@ const mapStateToProps = state => ({
 	businesses: state.businessReducer.businesses,
 	isLoggedIn: state.userReducer.isLoggedIn,
 	isBusiness: state.userReducer.isBusiness,
-	username: state.userReducer.username
+	username: state.userReducer.username,
+	isRedirect: state.businessReducer.isRedirect,
+	currentBusiness: state.businessReducer.currentBusiness
 });
 
-export default connect(mapStateToProps)(Home);
+export default withRouter(connect(mapStateToProps)(Home));
+
