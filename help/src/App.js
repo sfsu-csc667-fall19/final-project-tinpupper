@@ -3,6 +3,7 @@ import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import Reviews from "./pages/Reviews";
 import UserLogin from "./pages/UserLogin";
 import axios from "axios";
 import "./App.css";
@@ -43,7 +44,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
         </button>
       </div>
       <Switch>
-        <Route path="/writereview" />
+        <Route path="/writereview" component ={Reviews}/>
         <Route path="/settings" />
         <Route path="/business"/>
         <Route path="/login" component={Login} />
