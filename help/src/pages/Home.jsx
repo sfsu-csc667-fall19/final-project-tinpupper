@@ -1,9 +1,10 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { Redirect, Link, withRouter } from "react-router-dom";
+import axios from "axios";
+import { Redirect, Link, withRouter} from "react-router-dom";
 import { connect } from "react-redux";
-import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
+import { setIsLoggedIn, setUsername, setIsBusiness } from "../redux/actions/userActions";
 import { setIsRedirect, listBusinesses, setCurrentBusiness } from "../redux/actions/businessActions";
 
 const options = {
@@ -32,6 +33,14 @@ const mockData = [
 
 const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect, currentBusiness }) => {
 	React.useEffect(() => {
+		axios.post("/auth/cookies", options).then(res => {
+			console.log(res);
+			if (res.data.message === "Successfully authenticated") {
+				dispatch(setIsBusiness(res.data.user.isBusiness));
+				dispatch(setUsername(res.data.user.username));
+				dispatch(setIsLoggedIn(true));
+			}
+		});
 		dispatch(listBusinesses());
 	}, []);
 
@@ -72,7 +81,7 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 								{/* will be replaced by business.text */}
 								{business.description}
 							</Card.Text>
-							{!isBusiness &&
+							{!isBusiness ?
 							<Button
 								variant="primary"
 								onClick={() => {
@@ -82,8 +91,26 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 								}
 								}
 							>
-								Write a review
+							
+								Write a review 
+
 							</Button>
+							: (
+
+								<Button
+								variant="primary"
+								onClick={() => {
+									dispatch(setCurrentBusiness(business.name))
+									console.log(businesses)
+									dispatch(setIsRedirect(true))
+								}
+								}
+							>
+							
+								Read review 
+
+							</Button>
+								)
 							}
 						</Card.Body>
 					</Card>
@@ -97,6 +124,7 @@ const mapStateToProps = state => ({
 	businesses: state.businessReducer.businesses,
 	isLoggedIn: state.userReducer.isLoggedIn,
 	isBusiness: state.userReducer.isBusiness,
+	username: state.userReducer.username,
 	isRedirect: state.businessReducer.isRedirect,
 	currentBusiness: state.businessReducer.currentBusiness
 });

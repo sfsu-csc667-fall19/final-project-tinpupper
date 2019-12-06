@@ -16,10 +16,10 @@ const options = {
 
 const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
   const logOutUser = () => {
-    document.clearCookie("username");
-    document.clearCookie("password");
+    document.cookie = "username=";
+    document.cookie = "password=";
     // dispatch(setIsLoggedIn(false));
-    // window.location.href= "//";
+    window.location.href= "/";
   };
   return (
     <div className="App">
@@ -28,9 +28,8 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        {!isBusiness &&(<NavLink to="/writereview">Write a review </NavLink>)}
         <NavLink to="/settings"> Settings </NavLink>
-        {isBusiness &&<NavLink to="/business"> Business </NavLink>}
+        {isBusiness && <NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
         {!isLoggedIn && <NavLink to="/join"> Join </NavLink>}
 
@@ -46,7 +45,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
       <Switch>
         <Route path="/writereview" component ={Reviews}/>
         <Route path="/settings" />
-        <Route path="/business"/>
+        <Route path="/business" />
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
 
@@ -59,7 +58,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
 const mapStateToProps = state => ({
   isLoggedIn: state.userReducer.isLoggedIn,
   isBusiness: state.userReducer.isBusiness,
-  isSignedUp: state.userReducer.isSignedUp,
+  isSignedUp: state.userReducer.isSignedUp
 });
 
 export default connect(mapStateToProps)(App);
