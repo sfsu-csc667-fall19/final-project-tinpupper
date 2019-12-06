@@ -79,13 +79,14 @@ app.post(`/review`, (req, res) => {
       withCredentials: true,
     };
 
+    // Add review to the restaurantIds
     const p1 = axios.post(
       'http://restaurant:3012/restaurant/addReview',
       { restaurantId, reviewId: review._id },
       headers,
     );
 
-    // Cookies dont work with post
+    // Add review to the user's collection
     const p2 = axios.post(
       'http://user:3010/user/updateReview',
       { userId, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },

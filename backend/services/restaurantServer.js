@@ -92,8 +92,8 @@ app.get(`/restaurant/:id`, async (req, res) => {
 /* * * * * * * * * * * * *
  * POST RESTAURANT       *
  * * * * * * * * * * * * */
-app.post(`/restaurant`, (req, res) => {
-  const { name, description, ownerId } = req.body;
+app.post(`/restaurant`, async (req, res) => {
+  const { name, description } = req.body;
   console.log('before cookies');
   const { username, password } = req.cookies;
   const imageUrl =
@@ -107,7 +107,7 @@ app.post(`/restaurant`, (req, res) => {
       res.send({ error: err, message: 'failed to post' });
     }
     console.log(user);
-    producerPost.send({ name, description, ownerId: user[0]._id, imageUrl });
+    producerPost.send({ name, description, ownerId: user[0]._id, imageUrl, username, password });
     res.send({
       ownerId: user[0]._id,
       name,

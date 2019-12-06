@@ -109,6 +109,23 @@ app.post('/user/updateReview', (req, res) => {
 });
 
 /* * * * * * * * * *
+ * PRIVATE POST: update restaurant for business user  *
+ * * * * * * * * * */
+app.post('/user/updateRestaurant', (req, res) => {
+  console.log('inside user/updateRestaurant');
+  const { userId, restaurantId } = req.body;
+
+  let message = 'Updated user with new restaurantId';
+
+  User.update({ _id: userId }, { $push: { restaurantIds: restaurantId } }, (err, result) => {
+    console.log('RESULT: ', result);
+    console.log('ERR: ', err);
+    if (err) message = 'Unable to updated RESTAURANT for USER';
+    res.send({ userId, restaurantId, message });
+  });
+});
+
+/* * * * * * * * * *
  * DELETE USER     *
  * * * * * * * * * */
 app.delete('/user/:id', async (req, res) => {

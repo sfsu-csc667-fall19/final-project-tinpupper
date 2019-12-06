@@ -104,6 +104,7 @@ const cookiesNotNull = (req, res, next) => {
   req.hasCookies = false;
 
   console.log('COOKIES: ', req.cookies);
+  console.log(`BODY: `, req.body);
 
   // Invalid cookies
   if (!req.cookies.username || !req.cookies.password) {
