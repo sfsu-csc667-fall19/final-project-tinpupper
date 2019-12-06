@@ -92,6 +92,23 @@ app.get('/user', async (req, res) => {
 });
 
 /* * * * * * * * * *
+ * PRIVATE POST: update review user  *
+ * * * * * * * * * */
+app.get('/user/updateReview', async (req, res) => {
+  console.log('inside user/addReview');
+  const { userId, reviewId } = req.body;
+
+  let message = 'Updated user with new reviewId';
+
+  User.update({ _id: userId }, { $push: { reviewIds: reviewId } }, (err, result) => {
+    console.log('RESULT: ', result);
+    console.log('ERR: ', err);
+    if (err) message = 'Unable to updated review for USER';
+    res.send({ userId, reviewId, message });
+  });
+});
+
+/* * * * * * * * * *
  * DELETE USER     *
  * * * * * * * * * */
 app.delete('/user/:id', async (req, res) => {

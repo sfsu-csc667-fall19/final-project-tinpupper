@@ -10,11 +10,14 @@ const restaurantSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  reviewerIds: {
+  reviewIds: {
     type: [String],
   },
   ownerId: {
     required: true,
+    type: String,
+  },
+  image: {
     type: String,
   },
 });

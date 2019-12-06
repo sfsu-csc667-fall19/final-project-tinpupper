@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     type: Boolean,
   },
+  reviewIds: {
+    type: [String],
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);

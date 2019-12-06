@@ -75,8 +75,23 @@ app.post(`/review`, (req, res) => {
       Cookie: 'username=bob; password=123;',
     };
 
-    try {
-      await axios.post('http://restaurant:3012/restaurant/addReview', { restaurantId, reviewId: review._id }, headers);
+    const p1 = axios.post(
+      'http://restaurant:3012/restaurant/addReview',
+      { restaurantId, reviewId: review._id },
+      headers,
+    );
+    const p2 = axios.post('http://user:3010/user/updateReview', { userId, reviewId: review._id }, headers);
+
+    Promise.all([
+      p1.catch(error => {
+        return res.send(error);
+      }),
+      p2.catch(error => {
+        return res.send(error);
+      }),
+    ]).then(values => {
+      console.log('Resolving all Restaurant and User update for review...');
+      console.log(values);
 
       return res.send({
         userId: review.userId,
@@ -84,10 +99,7 @@ app.post(`/review`, (req, res) => {
         text: review.text,
         restaurantId: review.restaurantId,
       });
-    } catch (err) {
-      console.log(err);
-      res.send(err);
-    }
+    });
   });
 
   // 4) res.send in the format below:

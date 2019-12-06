@@ -81,7 +81,7 @@ app.get(`/restaurant/:id`, async (req, res) => {
     name: result.name,
     description: result.description,
     ownerId: result.ownerId,
-    reviewerIds: result.reviewerIds,
+    reviewIds: result.reviewIds,
   });
 });
 
@@ -90,8 +90,10 @@ app.get(`/restaurant/:id`, async (req, res) => {
  * * * * * * * * * * * * */
 app.post(`/restaurant`, (req, res) => {
   const { name, description, ownerId } = req.body;
-  producerPost.send({ name, description, ownerId });
-  res.send({ ownerId, name, description, message: 'Creating restaurant...' });
+  const imageUrl =
+    'https://cdn2.atlantamagazine.com/wp-content/uploads/sites/4/2019/07/RestaurantEugene01_courtesy.jpg';
+  producerPost.send({ name, description, ownerId, imageUrl });
+  res.send({ ownerId, name, description, imageUrl, message: 'Creating restaurant...' });
 });
 
 /* * * * * * * * * * * * *
@@ -106,7 +108,7 @@ app.put('/restaurant/:id', (req, res) => {
 });
 
 /* * * * * * * * * * * * *
- * PRIVATE POST: ADD TO REVIEWER IDs       *
+ * PRIVATE POST: ADD TO review IDs       *
  * * * * * * * * * * * * */
 app.post(`/restaurant/addReview`, (req, res) => {
   console.log('inside restaurant/addReview');
@@ -115,7 +117,7 @@ app.post(`/restaurant/addReview`, (req, res) => {
   let message = 'Updated restaurant with new reviewId';
 
   // Use mongoDB here to add to review array
-  Restaurant.update({ _id: restaurantId }, { $push: { reviewerIds: reviewId } }, (err, result) => {
+  Restaurant.update({ _id: restaurantId }, { $push: { reviewIds: reviewId } }, (err, result) => {
     console.log('RESULT: ', result);
     console.log('ERR: ', err);
     if (err) message = 'Unable to updated review for restaurant';
