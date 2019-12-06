@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const connect = require('../mongo/connect');
 const Review = require('../models/review.model');
+const User = require('../models/user.model');
 const axios = require('axios');
 
 const app = express();
@@ -51,76 +52,73 @@ app.get(`/review/:id`, async (req, res) => {
  * * * * * * * * * * * * */
 app.post(`/review`, (req, res) => {
   console.log(`Attempting to post review...`);
-  // 0) Look at "services/registerServer" and look for the giant "REGISTER NEW USER" comment box for how to do it
-  // 1) Get restaurantId, userId, and text from
-  //     - req.body.restaurantId & req.body.userId & req.body.text
-  const { restaurantId, userId, text, username } = req.body;
-  // 2) Use Review.create to create the review. See file in step 0.
 
-  // Create new user in mongoDB
-  Review.create({ restaurantId, userId, text, username }, (err, review) => {
-    console.log('Inside Review.Create');
-    console.log(req.cookies);
-    // Failed to create new user
+  const { restaurantId, text } = req.body;
+  const { username, password } = req.cookies;
+
+  // Look up user via cookies
+  // Get userId and username
+  User.find({ username, password }, (err, user) => {
     if (err) {
-      console.log('Post review failed...');
-
-      return res.status(400).send({
-        error: err.message,
-        message: 'Failed to post review',
-      });
+      res.send({ error: err, message: 'failed to post' });
     }
+    console.log(user);
 
-    console.log('Posted review successful...');
+    // Create new user in mongoDB
+    return Review.create({ restaurantId, userId: user[0]._id, text, username: user[0].username }, (err, review) => {
+      console.log('Inside Review.Create');
+      console.log(req.cookies);
+      // Failed to create new user
+      if (err) {
+        console.log('Post review failed...');
 
-    // Also need to update the Restaurant collection with the review
-    const headers = {
-      Cookie: 'username=bob; password=123;',
-      withCredentials: true,
-    };
-
-    // Add review to the restaurantIds
-    const p1 = axios.post(
-      'http://restaurant:3012/restaurant/addReview',
-      { restaurantId, reviewId: review._id },
-      headers,
-    );
-
-    // Add review to the user's collection
-    const p2 = axios.post(
-      'http://user:3010/user/updateReview',
-      { userId, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
-      headers,
-    );
-
-    Promise.all([p1, p2])
-      .then(values => {
-        console.log('Resolving all Restaurant and User update for review...');
-        // console.log(values[0]);
-        // console.log(values[1]);
-
-        return res.send({
-          userId: review.userId,
-          message: 'Successfully posted review',
-          text: review.text,
-          restaurantId: review.restaurantId,
+        return res.status(400).send({
+          error: err.message,
+          message: 'Failed to post review',
         });
-      })
-      .catch(err => {
-        console.log('PROMISE ALL FAILED IN REVIEW SERVICE: ', err);
-        return res.send({ error: err, message: 'Failed to resolve all promise in review POST' });
-      });
-  });
+      }
 
-  // 4) res.send in the format below:
-  /**
-   * {
-   *    message: "Successfully posted review",
-   *    userId: userId,
-   *    text: text,
-   *    restaurantId: restaurantId
-   * }
-   */
+      console.log('Posted review successful...');
+
+      // Also need to update the Restaurant collection with the review
+      const headers = {
+        Cookie: 'username=bob; password=123;',
+        withCredentials: true,
+      };
+
+      // Add review to the restaurantIds
+      const p1 = axios.post(
+        'http://restaurant:3012/restaurant/addReview',
+        { restaurantId, reviewId: review._id },
+        headers,
+      );
+
+      // Add review to the user's collection
+      const p2 = axios.post(
+        'http://user:3010/user/updateReview',
+        { userId: user[0]._id, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
+        headers,
+      );
+
+      Promise.all([p1, p2])
+        .then(values => {
+          console.log('Resolving all Restaurant and User update for review...');
+          // console.log(values[0]);
+          // console.log(values[1]);
+
+          return res.send({
+            userId: user[0]._id,
+            message: 'Successfully posted review',
+            text: review.text,
+            restaurantId: review.restaurantId,
+          });
+        })
+        .catch(err => {
+          console.log('PROMISE ALL FAILED IN REVIEW SERVICE: ', err);
+          return res.send({ error: err, message: 'Failed to resolve all promise in review POST' });
+        });
+    });
+  });
 });
 
 /* * * * * * * * * * * * *
