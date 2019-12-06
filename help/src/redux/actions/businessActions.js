@@ -11,6 +11,8 @@ export const listBusinesses = () => (dispatch, getState) => {
     .then(console.log);
 };
 
+
+
 export const setId = _id => ({
   type: 'BUSINESS_SET_ID',
   _id,
@@ -26,6 +28,11 @@ export const setIsRedirect = isRedirect=> ({
   isRedirect
 });
 
+export const setCurrentBusiness = currentBusiness => ({
+  type: 'BUSINESS_SET_CURRENT_BUSINESS',
+  currentBusiness,
+});
+
 export const updateBusiness = () => (dispatch, getState) => {
   const {_id , newBusiness} = getState().businessReducer;
  // const _id = getState().notesReducer._id;
@@ -36,6 +43,7 @@ export const updateBusiness = () => (dispatch, getState) => {
     dispatch(setNewBusiness(''));
     dispatch(setId(''));
     dispatch(listBusinesses());
+    dispatch(setCurrentBusiness());
   })
   .catch(console.log);
 }

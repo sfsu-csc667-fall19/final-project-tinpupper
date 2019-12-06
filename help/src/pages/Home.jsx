@@ -4,19 +4,39 @@ import Button from "react-bootstrap/Button";
 import { Redirect, Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
-import { setIsRedirect, listBusinesses } from "../redux/actions/businessActions";
+import { setIsRedirect, listBusinesses, setCurrentBusiness } from "../redux/actions/businessActions";
 
 const options = {
 	withCredentials: true
 };
 
-const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect }) => {
+// Array of businesses
+const mockData = [
+	{
+		name: "Mcdonald's",
+		description: "I am mcdonald wow",
+	},
+	{
+		name: "Burger King", 
+		description: "Eat our burgers or else"
+	},
+	{
+		name: "Chipotle", 
+		description: "Eat our food"
+	},
+	{
+		name: "KFC", 
+		description: "Eat my chicken or else"
+	}
+]
+
+const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect, currentBusiness }) => {
 	React.useEffect(() => {
 		dispatch(listBusinesses());
 	}, []);
 
 	if (isRedirect) {
-		console.log('TEST')
+		console.log(isRedirect)
 		dispatch(setIsRedirect(false));
 		return (
 		<Redirect to="/writereview"/>
@@ -40,25 +60,24 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 				)}
 			</div>
 
-			{businesses.map((business, i) => (
+			{mockData.map((business, i) => (
 				<div key={i} className="display-row padding-2-p">
 					<Card style={{ width: "18rem" }}>
 						<Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
 						{/* will be replaced by business.img if thats doable*/}
 						<Card.Body>
-							<Card.Title>{business}</Card.Title>{" "}
+							<Card.Title>{business.name}</Card.Title>{" "}
 							{/* will be replaced by business.name or something*/}
 							<Card.Text>
 								{/* will be replaced by business.text */}
-								Some quick example text to build on the card
-								title and make up the bulk of the card's
-								content.
+								{business.description}
 							</Card.Text>
 							{!isBusiness &&
 							<Button
 								variant="primary"
 								onClick={() => {
-									console.log(isRedirect)
+									dispatch(setCurrentBusiness(business.name))
+									console.log(businesses)
 									dispatch(setIsRedirect(true))
 								}
 								}
@@ -79,6 +98,8 @@ const mapStateToProps = state => ({
 	isLoggedIn: state.userReducer.isLoggedIn,
 	isBusiness: state.userReducer.isBusiness,
 	isRedirect: state.businessReducer.isRedirect,
+	currentBusiness: state.businessReducer.currentBusiness
 });
 
 export default withRouter(connect(mapStateToProps)(Home));
+
