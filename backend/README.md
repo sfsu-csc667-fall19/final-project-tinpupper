@@ -267,7 +267,7 @@ N/A
   message: 'Restaurant found',
   name: 'Pho Noodle House'
   description: 'A great place to eat stuff and do things'
-  reviews: [userID: int]
+  reviewerIds: [userID: int]
 }
 ```
 

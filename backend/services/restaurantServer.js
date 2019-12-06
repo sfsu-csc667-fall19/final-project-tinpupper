@@ -81,7 +81,7 @@ app.get(`/restaurant/:id`, async (req, res) => {
     name: result.name,
     description: result.description,
     ownerId: result.ownerId,
-    reviewerIds: [1, 2, 3], // The user ids of those who left reviews
+    reviewerIds: result.reviewerIds,
   });
 });
 
@@ -106,22 +106,51 @@ app.put('/restaurant/:id', (req, res) => {
 });
 
 /* * * * * * * * * * * * *
+ * PRIVATE POST: ADD TO REVIEWER IDs       *
+ * * * * * * * * * * * * */
+app.post(`/restaurant/addReview`, (req, res) => {
+  console.log('inside restaurant/addReview');
+  const { restaurantId, reviewId } = req.body;
+
+  let message = 'Updated restaurant with new reviewId';
+
+  // Use mongoDB here to add to review array
+  Restaurant.update({ _id: restaurantId }, { $push: { reviewerIds: reviewId } }, (err, result) => {
+    console.log('RESULT: ', result);
+    console.log('ERR: ', err);
+    if (err) message = 'Unable to updated review for restaurant';
+    res.send({ restaurantId, reviewId, message });
+  });
+});
+
+/* * * * * * * * * * * * *
+ * UPDATE RESTAURANT     *
+ * * * * * * * * * * * * */
+app.put('/restaurant/:id', (req, res) => {
+  const { id } = req.params;
+  producerUpdate.send({ id });
+
+  // UPDATE isnt in documentation
+  res.send({ name, message: 'Updating restaurant...' });
+});
+
+/* * * * * * * * * * * * *
  * DELETE RESTAURANT     *
  * * * * * * * * * * * * */
-app.delete(`/restaurant/:id`, (req, res) => {
+app.delete(`/restaurant/:id`, async (req, res) => {
   const { id } = req.params;
   //get id for restraurant
   let message = 'Successfully deleted restaurant';
   //default message that res was deleted
-  const remove = await Restaurant.findByIdAndRemove(id, { useFindandModify: false, }).exec();
+  const remove = await Restaurant.findByIdAndRemove(id, { useFindandModify: false }).exec();
   //delete from data base
 
-  if(!remove) message = 'Unable to remove restaurant';
+  if (!remove) message = 'Unable to remove restaurant';
   //message if the delete failed
 
-   //send back responses
+  //send back responses
   res.status(200).send({
-    message, 
+    message,
     restaurant: removed,
   });
 });

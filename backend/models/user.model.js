@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  restaurants: {
-    type: [mongoose.Schema.Types.ObjectId],
+  restaurantIds: {
+    type: [String],
   },
   isBusiness: {
     required: true,

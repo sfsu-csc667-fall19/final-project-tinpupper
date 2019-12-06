@@ -11,11 +11,11 @@ const reviewSchema = new mongoose.Schema({
   },
   restaurantId: {
     required: true,
-    type: [mongoose.Schema.Types.ObjectId],
+    type: String,
   },
   userId: {
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
   },
 });
 
