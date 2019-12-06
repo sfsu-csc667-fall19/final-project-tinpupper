@@ -263,6 +263,7 @@ N/A
 
 ```
 {
+  ownerId: "5dcdf1686f1fdecd6256f232",
   message: 'Restaurant found',
   name: 'Pho Noodle House'
   description: 'A great place to eat stuff and do things'
@@ -276,6 +277,7 @@ N/A
 
 ```
 {
+  ownerId: "5dcdf1686f1fdecd6256f232",
   name: 'Pho Noodle House',
   description: 'This is a restaurant that sells food oh yes it does.'
 }
@@ -291,7 +293,8 @@ N/A
 
 ```
 {
-  message: 'Creating restaurant... (kafka)',
+  ownerId: "5dcdf1686f1fdecd6256f232",
+  message: 'Creating restaurant...',
   name: 'Pho Noodle House',
   description: 'This is a restaurant that sells food oh yes it does.'
 }
@@ -461,4 +464,3 @@ N/A
   restaurantId: "klankjjcbiwb9392b839ib"
 }
 ```
-

@@ -28,7 +28,7 @@ consumerPost.on('message', message => {
   console.log('Posting to database...');
   const data = JSON.parse(message.value);
 
-  Restaurant.create({ name: data.name, description: data.description }, (err, res) => {
+  Restaurant.create({ name: data.name, description: data.description, ownerId: data.ownerId }, (err, res) => {
     if (err) {
       console.error('Unable to post restaurant');
     } else {

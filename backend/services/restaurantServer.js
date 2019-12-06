@@ -79,7 +79,9 @@ app.get(`/restaurant/:id`, async (req, res) => {
   return res.send({
     message: 'Restaurant found',
     name: result.name,
-    reviews: [1, 2, 3], // The user ids of those who left reviews
+    description: result.description,
+    ownerId: result.ownerId,
+    reviewerIds: [1, 2, 3], // The user ids of those who left reviews
   });
 });
 
@@ -87,9 +89,9 @@ app.get(`/restaurant/:id`, async (req, res) => {
  * POST RESTAURANT       *
  * * * * * * * * * * * * */
 app.post(`/restaurant`, (req, res) => {
-  const { name, description } = req.body;
-  producerPost.send({ name, description });
-  res.send({ name, description, message: 'Creating restaurant...' });
+  const { name, description, ownerId } = req.body;
+  producerPost.send({ name, description, ownerId });
+  res.send({ ownerId, name, description, message: 'Creating restaurant...' });
 });
 
 /* * * * * * * * * * * * *
