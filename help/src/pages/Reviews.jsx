@@ -46,14 +46,26 @@ const Reviews = ({
                 <h2>HELP! A yelp like application.</h2>
             </div>
             <div>
-                {isLoggedIn && !isBusiness && (
+                {isLoggedIn ?
+                (<div>
+        {!isBusiness ? (
+                <div>
                     <h3>
                         Hello, {username} <br />
                     </h3>
-                )}
-                {isLoggedIn && isBusiness && (
+                ):
+                 (
                     <h3>Welcome to your business account, {username}</h3>
-                )}
+                )
+                 </div>
+                }
+                ) :(
+
+                    <h3><Link to="/login"> Please Login to write a review </Link></h3>
+                    )
+
+                </div>
+             }
             </div>
             <div>
                 {currentBusiness ? (
