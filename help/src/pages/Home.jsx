@@ -11,26 +11,6 @@ const options = {
   withCredentials: true,
 };
 
-// Array of businesses
-const mockData = [
-  {
-    name: "Mcdonald's",
-    description: 'I am mcdonald wow',
-  },
-  {
-    name: 'Burger King',
-    description: 'Eat our burgers or else',
-  },
-  {
-    name: 'Chipotle',
-    description: 'Eat our food',
-  },
-  {
-    name: 'KFC',
-    description: 'Eat my chicken or else',
-  },
-];
-
 const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect, currentBusiness }) => {
   // *********************************************************************************
   // JOHN:
