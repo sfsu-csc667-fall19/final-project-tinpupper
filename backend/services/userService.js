@@ -68,10 +68,7 @@ app.get("/user/:id", async (req, res) => {
   let message = "Received user";
   const { id } = req.params;
   // gets user id
-  // ********************************
-  // JOHN: It's findById not findbyID
-  // ********************************
-  const received = await User.findbyID(id).exec();
+  const received = await User.findById(id).exec();
   //finds user fromn id variable -> received
   if (!received) message = `User does not exist for ${id}`;
   //error message if not received
@@ -104,15 +101,17 @@ app.delete("/user/:id", async (req, res) => {
   let message = "Successfully deleted user";
   const { id } = req.params;
   //get id
-  const remove = await User.findByIdAndRemove(id, {
+  const removed = await User.findByIdAndRemove(id, {
     useFindandModify: false
   }).exec();
 
-  // ********************************
-  // JOHN: your missing a res.status(200).send() here
-  // go to "note/note.controller.js" and look at "const removeNote"
-  // ********************************
+  res.status(200).send({
+      message,
+      user: removed,
+  })
+
 });
+
 
 app.listen(port, () =>
   console.log(`userService app listening on port ${port}!`)
