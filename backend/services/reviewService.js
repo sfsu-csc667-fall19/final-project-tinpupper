@@ -7,6 +7,7 @@ const connect = require('../mongo/connect');
 const Review = require('../models/review.model');
 const User = require('../models/user.model');
 const axios = require('axios');
+const { cookiesNotNull, authenticate } = require('../note/note.controller');
 
 const app = express();
 const port = 3013;
@@ -27,6 +28,8 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * * *
  * GET Single Review by ID *
@@ -89,7 +92,7 @@ app.post(`/review`, (req, res) => {
       // Add review to the restaurantIds
       const p1 = axios.post(
         'http://restaurant:3012/restaurant/addReview',
-        { restaurantId, reviewId: review._id },
+        { restaurantId, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
         headers,
       );
 

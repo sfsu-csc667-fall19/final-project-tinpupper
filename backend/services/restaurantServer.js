@@ -9,6 +9,7 @@ const Restaurant = require('../models/restaurant.model');
 const User = require('../models/user.model');
 const KafkaProducer = require('../helpers/KafkaProducer');
 const { RESTAURANT_DELETE, RESTAURANT_POST, RESTAURANT_UPDATE } = require('../helpers/KafkaTopicNames');
+const { cookiesNotNull, authenticate } = require('../note/note.controller');
 
 const producerPost = new KafkaProducer(RESTAURANT_POST);
 const producerUpdate = new KafkaProducer(RESTAURANT_UPDATE);
@@ -37,6 +38,8 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * GET ALL RESTAURANT    *
@@ -94,6 +97,7 @@ app.get(`/restaurant/:id`, async (req, res) => {
  * * * * * * * * * * * * */
 app.post(`/restaurant`, async (req, res) => {
   const { name, description } = req.body;
+  console.log(`${name} and ${description}`);
   console.log('before cookies');
   const { username, password } = req.cookies;
   const imageUrl =
@@ -135,6 +139,7 @@ app.put('/restaurant/:id', (req, res) => {
  * * * * * * * * * * * * */
 app.post(`/restaurant/addReview`, (req, res) => {
   console.log('inside restaurant/addReview');
+  console.log(req.body);
   const { restaurantId, reviewId } = req.body;
 
   let message = 'Updated restaurant with new reviewId';
