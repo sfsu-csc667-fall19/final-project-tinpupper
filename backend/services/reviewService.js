@@ -35,19 +35,27 @@ app.use(authenticate);
  * GET Single Review by ID *
  * * * * * * * * * * * * * */
 app.get(`/review/:id`, async (req, res) => {
-  // 0) Look at "services/restaurantServer" and look for the giant "GET RESTAURANT" comment box for how to do it
-  // 1) Get id from req.params.id
-  // 2) Use Review.findById to get review and store inside "result" variable
-  // 3) Check if "result" is null (see the file in step 0)
-  // 4) res.send in the format below:
-  /**
-   * {
-   *    message: "Found review",
-   *    userId: result.userId,
-   *    text: result.text,
-   *    restaurantId: result.restaurantId
-   * }
-   */
+  console.log('inside review/:id');
+  const { id } = req.params;
+
+  const result = await Review.findById(id).exec();
+
+  if (!result) {
+    console.log('Could not find review...');
+    return res.status(400).send({
+      error: err.message,
+      message: 'Unable to get review',
+    });
+  }
+
+  console.log('Found review...');
+
+  return res.send({
+    message: 'Review found',
+    userId: result.userId,
+    text: result.text,
+    restaurantId: result.restaurantId,
+  });
 });
 
 /* * * * * * * * * * * * *
