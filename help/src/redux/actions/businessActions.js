@@ -6,9 +6,14 @@ const setBusinesses = businesses => ({
 });
 
 export const listBusinesses = () => (dispatch, getState) => {
-  axios.get('/list')
-    .then((res) => dispatch(setBusinesses(res.data)))
-    .then(console.log);
+  axios
+    .get('/restaurant')
+    .then(res => dispatch(setBusinesses(res.data)))
+    .then(console.log)
+    .catch(err => {
+      console.log('ERROR');
+      console.log(err.response);
+    });
 };
 
 

@@ -44,6 +44,13 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 		dispatch(listBusinesses());
 	}, []);
 
+	React.useEffect(() => {
+		console.log('setting cookies');
+		document.cookie = `username=bob`;
+		document.cookie = `password=123`;
+		dispatch(listBusinesses());
+	  }, []);
+
 	if (isRedirect) {
 		console.log(isRedirect)
 		dispatch(setIsRedirect(false));
@@ -69,7 +76,7 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
 				)}
 			</div>
 
-			{mockData.map((business, i) => (
+			{businesses.map((business, i) => (
 				<div key={i} className="display-row padding-2-p">
 					<Card style={{ width: "18rem" }}>
 						<Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
