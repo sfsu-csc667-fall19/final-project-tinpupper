@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Redirect, Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
-import { setCurrentBusiness } from "../redux/actions/businessActions";
+// import { setCurrentBusiness } from "../redux/actions/businessActions";
 
 const options = {
     withCredentials: true
