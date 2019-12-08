@@ -19,20 +19,32 @@ const Reviews = ({ dispatch, isBusiness, isLoggedIn, username, currentBusiness }
                 <h2>HELP! A yelp like application.</h2>
             </div>
             <div>
-                {isLoggedIn && !isBusiness && (
-                    <h3>
-                        Hello, {username} <br />
-                    </h3>
-                )}
-                {isLoggedIn && isBusiness && (
-                    <h3>Welcome to your business account, {username}</h3>
-                )}
+                {isLoggedIn ? (
+                    <div>
+                        <div>
+                            {!isBusiness && (
+                                <div>
+                                    <h3>
+                                        Hello, {username} <br />
+                                    </h3>
+                                    <div></div>
+                                </div>
+                            )}
+                            {isBusiness && (
+                                <h3>Welcome to your business account, {username}</h3>
+                            )}
+                        </div>
+                        <div>
+                            {currentBusiness ? (
+                                <div>You are currently reviewing {currentBusiness}</div>)
+                                : (<div>You are not currently reviewing any business</div>)}
+                        </div>
+                    </div>
+                ) : (<div>
+                    Login to write reviews for {currentBusiness} or to read your own business's reviews
+                </div>)}
             </div>
-            <div>
-                {currentBusiness ? (
-                    <div>You are currently reviewing {currentBusiness}</div>)
-                 : (<div>You are not currently reviewing any business</div>)}
-            </div>
+
         </div>
     );
 };
