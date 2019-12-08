@@ -2,9 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 const connect = require('../mongo/connect');
 const Review = require('../models/review.model');
+const User = require('../models/user.model');
 const axios = require('axios');
+const { cookiesNotNull, authenticate } = require('../note/note.controller');
 
 const app = express();
 const port = 3013;
@@ -21,27 +24,38 @@ connect(mongoUrl)
     console.error('+_+_+_+_+ Failed to connect to database in REVIEW +_+_+_+_+');
   });
 
+app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * * *
  * GET Single Review by ID *
  * * * * * * * * * * * * * */
 app.get(`/review/:id`, async (req, res) => {
-  // 0) Look at "services/restaurantServer" and look for the giant "GET RESTAURANT" comment box for how to do it
-  // 1) Get id from req.params.id
-  // 2) Use Review.findById to get review and store inside "result" variable
-  // 3) Check if "result" is null (see the file in step 0)
-  // 4) res.send in the format below:
-  /**
-   * {
-   *    message: "Found review",
-   *    userId: result.userId,
-   *    text: result.text,
-   *    restaurantId: result.restaurantId
-   * }
-   */
+  console.log('inside review/:id');
+  const { id } = req.params;
+
+  const result = await Review.findById(id).exec();
+
+  if (!result) {
+    console.log('Could not find review...');
+    return res.status(400).send({
+      error: err.message,
+      message: 'Unable to get review',
+    });
+  }
+
+  console.log('Found review...');
+
+  return res.send({
+    message: 'Review found',
+    userId: result.userId,
+    text: result.text,
+    restaurantId: result.restaurantId,
+  });
 });
 
 /* * * * * * * * * * * * *
@@ -49,68 +63,73 @@ app.get(`/review/:id`, async (req, res) => {
  * * * * * * * * * * * * */
 app.post(`/review`, (req, res) => {
   console.log(`Attempting to post review...`);
-  // 0) Look at "services/registerServer" and look for the giant "REGISTER NEW USER" comment box for how to do it
-  // 1) Get restaurantId, userId, and text from
-  //     - req.body.restaurantId & req.body.userId & req.body.text
-  const { restaurantId, userId, text, username } = req.body;
-  // 2) Use Review.create to create the review. See file in step 0.
 
-  // Create new user in mongoDB
-  Review.create({ restaurantId, userId, text, username }, async (err, review) => {
-    console.log('Inside Review.Create');
-    // Failed to create new user
+  const { restaurantId, text } = req.body;
+  const { username, password } = req.cookies;
+
+  // Look up user via cookies
+  // Get userId and username
+  User.find({ username, password }, (err, user) => {
     if (err) {
-      console.log('Post review failed...');
-
-      return res.status(400).send({
-        error: err.message,
-        message: 'Failed to post review',
-      });
+      res.send({ error: err, message: 'failed to post' });
     }
+    console.log(user);
 
-    console.log('Posted review successful...');
+    // Create new user in mongoDB
+    return Review.create({ restaurantId, userId: user[0]._id, text, username: user[0].username }, (err, review) => {
+      console.log('Inside Review.Create');
+      console.log(req.cookies);
+      // Failed to create new user
+      if (err) {
+        console.log('Post review failed...');
 
-    // Also need to update the Restaurant collection with the review
-    const headers = {
-      Cookie: 'username=bob; password=123;',
-    };
+        return res.status(400).send({
+          error: err.message,
+          message: 'Failed to post review',
+        });
+      }
 
-    const p1 = axios.post(
-      'http://restaurant:3012/restaurant/addReview',
-      { restaurantId, reviewId: review._id },
-      headers,
-    );
-    const p2 = axios.post('http://user:3010/user/updateReview', { userId, reviewId: review._id }, headers);
+      console.log('Posted review successful...');
 
-    Promise.all([
-      p1.catch(error => {
-        return res.send(error);
-      }),
-      p2.catch(error => {
-        return res.send(error);
-      }),
-    ]).then(values => {
-      console.log('Resolving all Restaurant and User update for review...');
-      console.log(values);
+      // Also need to update the Restaurant collection with the review
+      const headers = {
+        Cookie: 'username=bob; password=123;',
+        withCredentials: true,
+      };
 
-      return res.send({
-        userId: review.userId,
-        message: 'Successfully posted review',
-        text: review.text,
-        restaurantId: review.restaurantId,
-      });
+      // Add review to the restaurantIds
+      const p1 = axios.post(
+        'http://restaurant:3012/restaurant/addReview',
+        { restaurantId, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
+        headers,
+      );
+
+      // Add review to the user's collection
+      const p2 = axios.post(
+        'http://user:3010/user/updateReview',
+        { userId: user[0]._id, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
+        headers,
+      );
+
+      Promise.all([p1, p2])
+        .then(values => {
+          console.log('Resolving all Restaurant and User update for review...');
+          // console.log(values[0]);
+          // console.log(values[1]);
+
+          return res.send({
+            userId: user[0]._id,
+            message: 'Successfully posted review',
+            text: review.text,
+            restaurantId: review.restaurantId,
+          });
+        })
+        .catch(err => {
+          console.log('PROMISE ALL FAILED IN REVIEW SERVICE: ', err);
+          return res.send({ error: err, message: 'Failed to resolve all promise in review POST' });
+        });
     });
   });
-
-  // 4) res.send in the format below:
-  /**
-   * {
-   *    message: "Successfully posted review",
-   *    userId: userId,
-   *    text: text,
-   *    restaurantId: restaurantId
-   * }
-   */
 });
 
 /* * * * * * * * * * * * *

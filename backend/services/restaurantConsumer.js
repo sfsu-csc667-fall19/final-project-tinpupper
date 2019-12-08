@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const app = express();
 const connect = require('../mongo/connect');
 const Restaurant = require('../models/restaurant.model');
@@ -34,6 +35,12 @@ consumerPost.on('message', message => {
       if (err) {
         console.error('Unable to post restaurant');
       } else {
+        axios.post('http://user:3010/user/updateRestaurant', {
+          userId: data.ownerId,
+          restaurantId: res._id,
+          username: data.username,
+          password: data.password,
+        });
         console.log('* * * * * * * * * * * *');
         console.log('Created restaurant: ', data.name);
         console.log('Restaurant description: ', data.description);

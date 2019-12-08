@@ -277,7 +277,6 @@ N/A
 
 ```
 {
-  ownerId: "5dcdf1686f1fdecd6256f232",
   name: 'Pho Noodle House',
   description: 'This is a restaurant that sells food oh yes it does.'
 }
@@ -387,8 +386,6 @@ N/A
 
 ```
 {
-  message: "Successfully posted review",
-  userId: "kanwoihxc89oh43",
   text: "Wow this is a review",
   restaurantId: "klankjjcbiwb9392b839ib"
 }

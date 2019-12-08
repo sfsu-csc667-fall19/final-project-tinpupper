@@ -94,7 +94,7 @@ app.get('/user', async (req, res) => {
 /* * * * * * * * * *
  * PRIVATE POST: update review user  *
  * * * * * * * * * */
-app.get('/user/updateReview', async (req, res) => {
+app.post('/user/updateReview', (req, res) => {
   console.log('inside user/addReview');
   const { userId, reviewId } = req.body;
 
@@ -105,6 +105,23 @@ app.get('/user/updateReview', async (req, res) => {
     console.log('ERR: ', err);
     if (err) message = 'Unable to updated review for USER';
     res.send({ userId, reviewId, message });
+  });
+});
+
+/* * * * * * * * * *
+ * PRIVATE POST: update restaurant for business user  *
+ * * * * * * * * * */
+app.post('/user/updateRestaurant', (req, res) => {
+  console.log('inside user/updateRestaurant');
+  const { userId, restaurantId } = req.body;
+
+  let message = 'Updated user with new restaurantId';
+
+  User.update({ _id: userId }, { $push: { restaurantIds: restaurantId } }, (err, result) => {
+    console.log('RESULT: ', result);
+    console.log('ERR: ', err);
+    if (err) message = 'Unable to updated RESTAURANT for USER';
+    res.send({ userId, restaurantId, message });
   });
 });
 
