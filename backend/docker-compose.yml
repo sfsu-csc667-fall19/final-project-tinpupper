@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=prod
       - WEBSOCKET_HOST=websocket
-      - WEBSOCKET_PORT=6100
+      - WEBSOCKET_PORT=5500
     deploy:
       replicas: 1
       restart_policy:

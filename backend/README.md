@@ -7,6 +7,10 @@
 - [Review](#Review)
 - [User](#User)
 
+## Warning
+
+**docker-compose build** needs to be ran before **docker stack deploy -c**
+
 ## Note
 
 All errors are in the following format:
