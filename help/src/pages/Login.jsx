@@ -4,7 +4,12 @@ import md5 from "md5";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "axios";
-import { setUsername, setIsLoggedIn } from "../redux/actions/userActions.js";
+import {
+  setUsername,
+  setIsLoggedIn,
+  setIsSignedUp,
+  setIsBusiness
+} from "../redux/actions/userActions.js";
 
 const options = {
   withCredentials: true
@@ -42,10 +47,12 @@ const Login = ({ dispatch, username, isLoggedIn, isSignedUp }) => {
         // dispatch(setUsername(""));
       }
       if (response.data.message === "Successfully authenticated") {
-        console.log("After authentication", username);
         document.cookie = `username=${username}`;
         document.cookie = `password=${md5(password)}`;
+        console.log("Response after authentication" + response);
         let value = true;
+        console.log(response.data.user.isBusiness);
+        dispatch(setIsBusiness(response.data.user.isBusiness));
         dispatch(setIsLoggedIn(value));
       }
     });

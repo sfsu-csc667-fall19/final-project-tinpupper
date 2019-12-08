@@ -3,9 +3,11 @@ import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import Reviews from "./pages/Reviews";
 import UserLogin from "./pages/UserLogin";
 import axios from "axios";
 import "./App.css";
+import Business from "./pages/Business"
 import { setIsLoggedIn } from "./redux/actions/userActions.js";
 import { connect } from "react-redux";
 
@@ -13,12 +15,12 @@ const options = {
   withCredentials: true
 };
 
-const App = ({ isLoggedIn, dispatch, isBusiness }) => {
+const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
   const logOutUser = () => {
-    document.clearCookie("username");
-    document.clearCookie("password");
+    document.cookie = "username=";
+    document.cookie = "password=";
     // dispatch(setIsLoggedIn(false));
-    // window.location.href= "//";
+    window.location.href = "/";
   };
   return (
     <div className="App">
@@ -27,9 +29,8 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        {!isBusiness &&(<NavLink to="/writereview">Write a review </NavLink>)}
         <NavLink to="/settings"> Settings </NavLink>
-        {isBusiness &&<NavLink to="/business"> Business </NavLink>}
+        {isBusiness && <NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
         {!isLoggedIn && <NavLink to="/join"> Join </NavLink>}
 
@@ -43,9 +44,9 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
         </button>
       </div>
       <Switch>
-        <Route path="/writereview" />
+        <Route path="/writereview" component={Reviews} />
         <Route path="/settings" />
-        <Route path="/business"/>
+        <Route path="/business" component={Business} />
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
 
@@ -58,6 +59,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness }) => {
 const mapStateToProps = state => ({
   isLoggedIn: state.userReducer.isLoggedIn,
   isBusiness: state.userReducer.isBusiness,
+  isSignedUp: state.userReducer.isSignedUp
 });
 
 export default connect(mapStateToProps)(App);

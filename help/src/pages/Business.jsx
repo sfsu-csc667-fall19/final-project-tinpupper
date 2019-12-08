@@ -1,7 +1,7 @@
-import react from 'react';
+import React from 'react';
 import Axios from 'axios';
 
-class BusinessAccountForm extends React.Component {
+class Business extends React.Component {
     constructor(props) {
         super(props);
         this.state = {value: ''};
@@ -16,7 +16,7 @@ class BusinessAccountForm extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('A new name has been submitted:  ') + this.state.value);
+        alert('A new name has been submitted:  ' + this.state.value);
         event.preventDefault();
     }
 
@@ -25,10 +25,12 @@ class BusinessAccountForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <label> 
                     Name:
-                    <input type="text" valu={this.state.value} onChange={this.handleChange} />
+                    <input type="text" value={this.state.value} onChange={this.handleChange} />
                 </label>
                 <input type="submit" value="Submit" />
             </form>
         );
     }
 }
+
+export default Business;

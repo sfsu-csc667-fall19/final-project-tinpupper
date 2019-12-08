@@ -2,7 +2,7 @@
   "name": "help",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3004",
+  "proxy": "http://167.172.249.188:3004",
   "dependencies": {
     "axios": "^0.19.0",
     "axis": "^1.0.0",
