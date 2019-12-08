@@ -10,6 +10,8 @@ import {
     setIsBusiness
 } from "../redux/actions/userActions";
 import { setCurrentBusiness } from "../redux/actions/businessActions";
+import { setIsLoggedIn, setUsername } from "../redux/actions/userActions";
+// import { setCurrentBusiness } from "../redux/actions/businessActions";
 
 const options = {
     withCredentials: true
@@ -35,9 +37,6 @@ const Reviews = ({
             console.log(res);
         })
     }, []);
-
-
-
 
 
     return (
