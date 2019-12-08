@@ -33,14 +33,8 @@ const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedire
     dispatch(listBusinesses());
   }, []);
 
-  // React.useEffect(() => {
-  //   // console.log('setting cookies');
-  //   // document.cookie = `username=bob`;
-  //   // document.cookie = `password=123`;
-  //   dispatch(listBusinesses());
-  // }, []);
 
-  // *********************************************************************************
+  // *****************************************************************W****************
   // JOHN:
   // This runs everytime "businesses" changes
   // *********************************************************************************

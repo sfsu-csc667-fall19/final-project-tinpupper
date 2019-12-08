@@ -19,7 +19,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
     document.cookie = "username=";
     document.cookie = "password=";
     // dispatch(setIsLoggedIn(false));
-    window.location.href= "/";
+    window.location.href = "/";
   };
   return (
     <div className="App">
@@ -28,23 +28,22 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        <NavLink to="/settings"> Settings </NavLink>
         {isBusiness && <NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
         {!isLoggedIn && <NavLink to="/join"> Join </NavLink>}
-
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            logOutUser();
-          }}
-        >
-          Log Out
-        </button>
+        {isLoggedIn && (
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              logOutUser();
+            }}
+          >
+            Log Out
+          </button>
+        )}
       </div>
       <Switch>
-        <Route path="/writereview" component ={Reviews}/>
-        <Route path="/settings" />
+        <Route path="/writereview" component={Reviews} />
         <Route path="/business" />
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
