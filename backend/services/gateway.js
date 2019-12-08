@@ -76,11 +76,11 @@ app.all(`/websocket*`, (req, res) => {
   console.log(req.path);
   if (NODE_ENV === 'prod') {
     apiProxy.web(req, res, {
-      target: 'http://websocket:5500',
+      target: `http://websocket:${process.env.WEBSOCKET_PORT}`,
     });
   } else {
     apiProxy.web(req, res, {
-      target: 'http://localhost:5500',
+      target: `http://localhost:${process.env.WEBSOCKET_PORT}`,
     });
   }
 });

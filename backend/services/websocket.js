@@ -8,7 +8,7 @@ const redisOptions = {
 
 const client = redis.createClient(redisOptions);
 
-const wss = new WebSocket.Server({ port: 5500 });
+const wss = new WebSocket.Server({ port: 3027 });
 
 wss.on('connection', ws => {
   console.log('********************************');
