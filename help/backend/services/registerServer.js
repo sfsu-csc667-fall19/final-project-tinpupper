@@ -8,8 +8,8 @@ const User = require('../models/user.model');
 const app = express();
 app.use(morgan());
 const port = 3006;
-const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
-
+// const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
+const mongoUrl = "mongodb://localhost:27017/Lab12";
 /* * * * * * * * * * * *
  * CONNECT TO DATABASE *
  * * * * * * * * * * * */
