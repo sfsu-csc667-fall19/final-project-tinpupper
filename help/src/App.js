@@ -48,7 +48,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         <Route path="/business" />
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
-
+        <Route path="/home" component={Home} />
         <Route exact path="/" component={Home} />
       </Switch>
     </div>
