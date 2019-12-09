@@ -5,7 +5,6 @@ class Business extends React.Component {
     constructor(props) {
         super(props);
         this.state = {value: ''};
-
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -25,25 +24,25 @@ class Business extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <label> 
                    Restaurant Name:
-                    <input type="text" value={this.state.value} onChange={this.handleChange} />
+                <input type="text" value={this.state.value} onChange={this.handleChange} />
                 </label>
                 <input type="submit" value="Submit" />
                 <br />
 
                 <label>
                     Type: 
-                    <input type="text"  value={this.state.value} onChange={this.handleChange} />   
+                <input type="text"  value={this.state.value} onChange={this.handleChange} />   
                 </label> 
                 <input type="submit" value="Submit" />
                 <br />
 
                 <label>
                     Description: 
-                    <input type="text"  value={this.state.value} onChange={this.handleChange} />   
+                <input type="text"  value={this.state.value} onChange={this.handleChange} />   
                 </label> 
                 <input type="submit" value="Submit" />
                 <br />
-
+            
             <input type = "submit" value = "Submit"/>
             </form>
         );
