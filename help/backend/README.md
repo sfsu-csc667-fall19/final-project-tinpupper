@@ -7,11 +7,9 @@
 - [Review](#Review)
 - [User](#User)
 
-TODO:
-Update user response to have restaurants ID
-Fix login response since more data is added
-Add /auth/cookie documentation
-Fix auth cookie response more data added
+## Warning
+
+**docker-compose build** needs to be ran before **docker stack deploy -c**
 
 ## Note
 
@@ -23,6 +21,10 @@ All errors are in the following format:
   message: STRING
 }
 ```
+
+## WebSocket
+
+- Triggered during restaurant POST
 
 ---
 
