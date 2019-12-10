@@ -26,6 +26,16 @@ export const setCurrentBusiness = currentBusiness => ({
 });
 
 export const addNewBusiness = newBusiness => ({
-  type: "ADD_NEW_BUSINESS",
+  type: "ADD_NEW_BUSINESS_WS",
   newBusiness
 });
+
+export const setRestaurantDescription = description => ({
+  type: "SET_RESTAURANT_DESCRIPTION",
+  description
+});
+
+export const setRestaurantName = name => ({
+  type : "SET_RESTAURANT_NAME",
+  name
+})

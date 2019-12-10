@@ -22,9 +22,11 @@ ws.onopen = () => {
 
 ws.onmessage = message => {
   console.log(`This is the message: `, message.data);
+  console.log(message);
   switch (message.data) {
     case 'updateRestaurant':
-      console.log('This is called when a POST request is made to the restaurant');
+	  console.log('This is called when a POST request is made to the restaurant');
+	  store.dispatch(addNewBusiness())
       break;
     default:
       break;

@@ -25,6 +25,7 @@ const Home = ({
   isBusiness,
   isLoggedIn,
   username,
+  newBusiness,
   isRedirect
 }) => {
   // *********************************************************************************
@@ -41,6 +42,7 @@ const Home = ({
       console.log("The res from /restaurant ", res);
       console.log("working?");
       if (res.data.message === "Restaurants found") {
+
         dispatch(setBusinesses(res.data.restaurants));
         // console.log('setting cookies');
         // document.cookie = `password=abc`;
@@ -151,7 +153,8 @@ const mapStateToProps = state => ({
   isLoggedIn: state.userReducer.isLoggedIn,
   isBusiness: state.userReducer.isBusiness,
   username: state.userReducer.username,
-  isRedirect: state.businessReducer.isRedirect
+  isRedirect: state.businessReducer.isRedirect,
+  newBusiness: state.businessReducer.newBusiness,
 });
 
 export default connect(mapStateToProps)(Home);
