@@ -22,28 +22,30 @@ class Business extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
+            <h1> Welcome to your Business Page</h1>
+            <br />
                 <label> 
                    Restaurant Name:
-                <input type="text" value={this.state.value} onChange={this.handleChange} />
+                <input type="text" class = "form-control" value={this.state.value} onChange={this.handleChange} />
                 </label>
-                <input type="submit" value="Submit" />
+                <button type = "submit" class = "btn btn-primary"> Submit </button>
                 <br />
 
                 <label>
                     Type: 
-                <input type="text"  value={this.state.value} onChange={this.handleChange} />   
+                <input type="text" class = "form-control" value={this.state.value} onChange={this.handleChange} />   
                 </label> 
-                <input type="submit" value="Submit" />
+                <button type = "submit" class = "btn btn-primary"> Submit </button>
                 <br />
 
                 <label>
                     Description: 
-                <input type="text"  value={this.state.value} onChange={this.handleChange} />   
+                <input type="text" class = "form-control"  value={this.state.value} onChange={this.handleChange} />   
                 </label> 
-                <input type="submit" value="Submit" />
+                <button type = "submit" class = "btn btn-primary"> Submit </button>
                 <br />
             
-            <input type = "submit" value = "Submit"/>
+            <button type = "submit" class = "btn btn-primary"> Submit </button>
             </form>
         );
     }
