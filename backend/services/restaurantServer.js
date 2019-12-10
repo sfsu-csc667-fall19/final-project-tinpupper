@@ -38,8 +38,10 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookiesNotNull);
-app.use(authenticate);
+
+// Uncomment to re-enable authentication
+// app.use(cookiesNotNull);
+// app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * GET ALL RESTAURANT    *
