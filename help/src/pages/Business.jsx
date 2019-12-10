@@ -15,34 +15,34 @@ class Business extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('A new name has been submitted:  ' + this.state.value);
+        alert('Your request has been submitted') //+ this.state.value
         event.preventDefault();
     }
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-            <h1> Welcome to your Business Page</h1>
+            <h1> Create Business</h1>
             <br />
                 <label> 
                    Restaurant Name:
-                <input type="text" class = "form-control" value={this.state.value} onChange={this.handleChange} />
+                <input type="text" class = "form-control" value={this.state.value} onChange={this.handleChange} placeholder="Desired restaurant(s)" />
                 </label>
-                <button type = "submit" class = "btn btn-primary"> Submit </button>
+                {/*<button type = "submit" class = "btn btn-primary"> Submit </button>*/}
                 <br />
 
                 <label>
-                    Type: 
-                <input type="text" class = "form-control" value={this.state.value} onChange={this.handleChange} />   
+                    Restaurant Type: 
+                <input type="text" class = "form-control" value={this.state.value} onChange={this.handleChange} placeholder="Type of restaurant(s)" />   
                 </label> 
-                <button type = "submit" class = "btn btn-primary"> Submit </button>
+                {/*<button type = "submit" class = "btn btn-primary"> Submit </button>*/}
                 <br />
 
                 <label>
-                    Description: 
-                <input type="text" class = "form-control"  value={this.state.value} onChange={this.handleChange} />   
+                   Restaurant Description: 
+                <input type="text" class = "form-control"  value={this.state.value} onChange={this.handleChange} placeholder="Description of restaurant(s)"/>   
                 </label> 
-                <button type = "submit" class = "btn btn-primary"> Submit </button>
+                {/*<button type = "submit" class = "btn btn-primary"> Submit </button>*/}
                 <br />
             
             <button type = "submit" class = "btn btn-primary"> Submit </button>
