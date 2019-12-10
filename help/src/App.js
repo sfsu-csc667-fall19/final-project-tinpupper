@@ -7,6 +7,7 @@ import Reviews from "./pages/Reviews";
 import UserLogin from "./pages/UserLogin";
 import axios from "axios";
 import "./App.css";
+import Business from "./pages/Business"
 import { setIsLoggedIn } from "./redux/actions/userActions.js";
 import { connect } from "react-redux";
 
@@ -19,7 +20,7 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
     document.cookie = "username=";
     document.cookie = "password=";
     // dispatch(setIsLoggedIn(false));
-    window.location.href= "/";
+    window.location.href = "/";
   };
   return (
     <div className="App">
@@ -43,9 +44,9 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         </button>
       </div>
       <Switch>
-        <Route path="/writereview" component ={Reviews}/>
+        <Route path="/writereview" component={Reviews} />
         <Route path="/settings" />
-        <Route path="/business" />
+        <Route path="/business" component={Business} />
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
 
