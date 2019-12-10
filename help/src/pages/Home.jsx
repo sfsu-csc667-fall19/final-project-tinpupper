@@ -1,32 +1,24 @@
-import React from "react";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import axios from "axios";
-import { Redirect, Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import {
-  setIsLoggedIn,
-  setUsername,
-  setIsBusiness
-} from "../redux/actions/userActions";
+import React from 'react';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+import { Redirect, Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setIsLoggedIn, setUsername, setIsBusiness } from '../redux/actions/userActions';
 import {
   setIsRedirect,
   setCurrentBusiness,
-  setBusinesses
-} from "../redux/actions/businessActions";
+  setBusinesses,
+  getUpdatedBusinessesAsync,
+} from '../redux/actions/businessActions';
+
+const ws = new WebSocket('ws://167.172.249.188:3004/websocket');
 
 const options = {
-  withCredentials: true
+  withCredentials: true,
 };
 
-const Home = ({
-  dispatch,
-  businesses,
-  isBusiness,
-  isLoggedIn,
-  username,
-  isRedirect
-}) => {
+const Home = ({ dispatch, businesses, isBusiness, isLoggedIn, username, isRedirect }) => {
   // *********************************************************************************
   // JOHN:
   // We will use isBusinessLoaded to determine whether businesses contains data or not.
@@ -37,16 +29,32 @@ const Home = ({
   const [isBusinessLoaded, setIsBusinessLoaded] = React.useState(false); // JOHN: False means hasn't loaded business yet
 
   React.useEffect(() => {
-    axios.get("/restaurant", options).then(res => {
-      console.log("The res from /restaurant ", res);
-      console.log("working?");
-      if (res.data.message === "Restaurants found") {
+    axios.get('/restaurant', options).then(res => {
+      console.log('The res from /restaurant ', res);
+      console.log('working?');
+      if (res.data.message === 'Restaurants found') {
         dispatch(setBusinesses(res.data.restaurants));
         // console.log('setting cookies');
         // document.cookie = `password=abc`;
         // document.cookie = `password=123`;
       }
     });
+
+    /************************
+     * JOHN (12/10/2019): Listen to changes to the Restaurant server
+     ************************/
+    ws.onmessage = message => {
+      console.log(`This is the message: `, message.data);
+      switch (message.data) {
+        // A restaurant was created, so refresh restaurant list
+        case 'updateRestaurant':
+          console.log('This is called when a POST request is made to the restaurant');
+          dispatch(getUpdatedBusinessesAsync());
+          break;
+        default:
+          break;
+      }
+    };
   }, []);
 
   // *********************************************************************************
@@ -60,10 +68,10 @@ const Home = ({
     // We also check if businesses.restaurants is not NULL because that can also be NULL
     // *********************************************************************************
     if (businesses && businesses.length > 1) {
-      console.log("set to true");
+      console.log('set to true');
       setIsBusinessLoaded(true);
     } else {
-      console.log("LESS");
+      console.log('LESS');
       // *********************************************************************************
       // JOHN:
       // This will stop displaying the data if the legnth is 0. Will prevent .map from erroring out in future
@@ -92,9 +100,7 @@ const Home = ({
             Hello, {username} <br />
           </h3>
         )}
-        {isLoggedIn && isBusiness && (
-          <h3>Welcome to your business account, {username}</h3>
-        )}
+        {isLoggedIn && isBusiness && <h3>Welcome to your business account, {username}</h3>}
       </div>
       {/* ********************************************************************************* */}
       {/* JOHN: */}
@@ -105,12 +111,10 @@ const Home = ({
       {/* ********************************************************************************* */}
       {businesses.map((business, i) => (
         <div key={i} className="display-row padding-2-p">
-          <Card style={{ width: "18rem" }}>
-            <Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
-            {/* will be replaced by business.img if thats doable*/}
+          <Card style={{ width: '18rem' }}>
+            <Card.Img src={require('../img/Mcdonalds.jpg')} /> {/* will be replaced by business.img if thats doable*/}
             <Card.Body>
-              <Card.Title>{business.name}</Card.Title>{" "}
-              {/* will be replaced by business.name or something*/}
+              <Card.Title>{business.name}</Card.Title> {/* will be replaced by business.name or something*/}
               <Card.Text>
                 {/* will be replaced by business.text */}
                 {business.description}
@@ -119,7 +123,16 @@ const Home = ({
                 <Button
                   variant="primary"
                   onClick={() => {
-                    dispatch(setCurrentBusiness(business.name));
+                    console.log(business);
+                    /*********************************************************
+                     * JOHN (12/10/2019):
+                     * CHANGES HERE
+                     *********************************************************/
+                    // OLD (12/10/2019): dispatch(setCurrentBusiness(business.name));
+                    dispatch(setCurrentBusiness(business));
+                    /*********************************************************
+                     * END CHANGES (12/10/2019)
+                     *********************************************************/
                     console.log(businesses);
                     dispatch(setIsRedirect(true));
                   }}
@@ -151,7 +164,7 @@ const mapStateToProps = state => ({
   isLoggedIn: state.userReducer.isLoggedIn,
   isBusiness: state.userReducer.isBusiness,
   username: state.userReducer.username,
-  isRedirect: state.businessReducer.isRedirect
+  isRedirect: state.businessReducer.isRedirect,
 });
 
 export default connect(mapStateToProps)(Home);
