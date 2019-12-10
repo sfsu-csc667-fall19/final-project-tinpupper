@@ -35,6 +35,11 @@ const businessReducer = (state = DEFAULT_STATE, action) => {
                 ...state,
                 currentBusiness: action.currentBusiness
             }
+        case 'ADD_NEW_BUSINESS':
+            return {
+                ...state,
+                newBusiness : action.newBusiness
+            }
         default:
             return state;
     }

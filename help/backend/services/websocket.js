@@ -20,9 +20,11 @@ client.on("message", (channel, message) => {
   console.log("********************************");
   console.log("Subscriber hears message: ");
   console.log(JSON.stringify(message));
+
   wss.clients.forEach(client => {
     client.send(message);
   });
+  console.log(message);
 });
 
 // Subscribe to Redis, redis sends messages

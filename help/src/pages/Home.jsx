@@ -154,4 +154,4 @@ const mapStateToProps = state => ({
   isRedirect: state.businessReducer.isRedirect
 });
 
-export default withRouter(connect(mapStateToProps)(Home));
+export default connect(mapStateToProps)(Home);
