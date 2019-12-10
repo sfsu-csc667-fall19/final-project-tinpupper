@@ -94,6 +94,9 @@ app.get(`/restaurant/:id`, async (req, res) => {
   });
 });
 
+app.use(cookiesNotNull);
+app.use(authenticate);
+
 /* * * * * * * * * * * * *
  * POST RESTAURANT       *
  * * * * * * * * * * * * */
