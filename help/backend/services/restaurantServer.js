@@ -38,8 +38,10 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookiesNotNull);
-app.use(authenticate);
+
+// Uncomment to re-enable authentication
+// app.use(cookiesNotNull);
+// app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * GET ALL RESTAURANT    *
@@ -91,6 +93,9 @@ app.get(`/restaurant/:id`, async (req, res) => {
     reviewIds: result.reviewIds,
   });
 });
+
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * POST RESTAURANT       *
