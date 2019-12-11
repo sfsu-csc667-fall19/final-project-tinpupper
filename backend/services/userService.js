@@ -1,11 +1,11 @@
-require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
-const connect = require("../mongo/connect");
-const User = require("../models/user.model");
-const { cookiesNotNull, authenticate } = require("../note/note.controller");
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const connect = require('../mongo/connect');
+const User = require('../models/user.model');
+const { cookiesNotNull, authenticate } = require('../note/note.controller');
 
 const app = express();
 app.use(cookieParser());
@@ -14,24 +14,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 3010;
 
-const mongoUrl =
-  "mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority";
+const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
 /* * * * * * * * * * * *
  * CONNECT TO MONGODB  *
  * * * * * * * * * * * */
 connect(mongoUrl)
   .then(async connection => {
-    console.log("Connected to database in registerService");
+    console.log('Connected to database in registerService');
   })
   .catch(e => {
-    console.error(
-      "+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+"
-    );
+    console.error('+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+');
   });
 
-app.use(cookiesNotNull);
-app.use(authenticate);
+// app.use(cookiesNotNull);
+// app.use(authenticate);
+
 app.use(morgan());
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -141,7 +139,4 @@ app.delete('/user/:id', async (req, res) => {
   }).exec();
 });
 
-
-app.listen(port, () =>
-  console.log(`userService app listening on port ${port}!`)
-);
+app.listen(port, () => console.log(`userService app listening on port ${port}!`));
