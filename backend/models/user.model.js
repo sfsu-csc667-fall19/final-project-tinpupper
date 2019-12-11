@@ -10,9 +10,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  restaurantIds: {
+    type: [String],
+  },
   isBusiness: {
     required: true,
     type: Boolean,
+  },
+  reviewIds: {
+    type: [String],
   },
 });
 

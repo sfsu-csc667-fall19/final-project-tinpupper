@@ -6,9 +6,19 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
-  reviews: {
+  description: {
     required: true,
-    type: [Number],
+    type: String,
+  },
+  reviewIds: {
+    type: [String],
+  },
+  ownerId: {
+    required: true,
+    type: String,
+  },
+  image: {
+    type: String,
   },
 });
 

@@ -1,79 +1,29 @@
-// const WebSocket = require('ws');
+const WebSocket = require('ws');
+const redis = require('redis');
 
-// const wss = new WebSocket.Server({ port: 4000 });
+const redisOptions = {
+  host: process.env.REDISHOST || 'localhost',
+  port: process.env.PORT || 6379,
+};
 
-// console.log('websocket activated');
+const client = redis.createClient(redisOptions);
 
-// // Should be in mongodb
-// const notes = [];
+const wss = new WebSocket.Server({ port: 3027 });
 
-// const broadcastMessage = message => {
-//   //
-//   wss.clients.forEach(client => {
-//     if (client.readyState === WebSocket.OPEN) {
-//       // Sends data from server to client
-//       client.send(JSON.stringify(message));
-//     }
-//   });
-// };
+wss.on('connection', ws => {
+  console.log('********************************');
+  console.log('Someone connected to web socket');
+  console.log('********************************');
+});
 
-// // Boardcase type and count to all users
-// const updateUserCount = () => {
-//   broadcastMessage({
-//     type: 'UPDATE_USER_COUNT',
-//     count: wss.clients.size,
-//   });
-// };
+client.on('message', (channel, message) => {
+  console.log('********************************');
+  console.log('Subscriber hears message: ');
+  console.log(JSON.stringify(message));
+  wss.clients.forEach(client => {
+    client.send(message);
+  });
+});
 
-// //
-// const broadcastAllMessages = newNote => {
-//   notes.unshift(newNote); // reverse order
-
-//   broadcastMessage({
-//     type: 'UPDATE_MESSAGES',
-//     notes,
-//   });
-// };
-
-// // Runs when someone connects to server
-// // 'wss' respresents the entire server
-// wss.on('connection', ws => {
-//   // 'ws' is a reference to a single client
-//   console.log('Someone has connected');
-//   //  broadcastMessage('someone has connected!');
-//   updateUserCount();
-
-//   // Whoever came in later gets all recent updated messages
-//   ws.send(
-//     JSON.stringify({
-//       type: 'UPDATE_MESSAGES',
-//       notes,
-//     }),
-//   );
-
-//   // Called from Home.js (text box)
-//   ws.on('message', message => {
-//     const messageObject = JSON.parse(message);
-//     console.log(messageObject);
-//     switch (messageObject.type) {
-//       case 'SEND_MESSAGE':
-//         broadcastAllMessages(messageObject.newNote);
-//         break;
-//       default:
-//         break;
-//     }
-//     // console.log(message);
-//   });
-
-//   // Page closes
-//   ws.on('close', () => {
-//     broadcastMessage('someone has disconnected!');
-//     console.log('someone has disconnected!');
-//   });
-
-//   ws.on('error', e => {
-//     console.log(e);
-//   });
-// });
-
-// module.exports = this;
+// Subscribe to Redis, redis sends messages
+client.subscribe('updateRestaurant');

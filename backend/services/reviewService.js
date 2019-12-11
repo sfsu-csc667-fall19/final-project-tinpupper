@@ -1,29 +1,31 @@
-require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const connect = require("../mongo/connect");
-const Review = require("../models/review.model");
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const connect = require('../mongo/connect');
+const Review = require('../models/review.model');
+const User = require('../models/user.model');
+const axios = require('axios');
+const { cookiesNotNull, authenticate } = require('../note/note.controller');
 
 const app = express();
 const port = 3013;
-const mongoUrl =
-  "mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority";
+const mongoUrl = 'mongodb+srv://john:123@cluster0-c6e3j.mongodb.net/test?retryWrites=true&w=majority';
 
 /* * * * * * * * * * * *
  * CONNECT TO DATABASE *
  * * * * * * * * * * * */
 connect(mongoUrl)
   .then(async connection => {
-    console.log("Connected to database in RESTAURANT");
+    console.log('Connected to database in REVIEW');
   })
   .catch(e => {
-    console.error(
-      "+_+_+_+_+ Failed to connect to database in RESTAURANT +_+_+_+_+"
-    );
+    console.error('+_+_+_+_+ Failed to connect to database in REVIEW +_+_+_+_+');
   });
 
-app.use(morgan("dev"));
+app.use(cookieParser());
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,89 +33,119 @@ app.use(bodyParser.urlencoded({ extended: true }));
  * GET Single Review by ID *
  * * * * * * * * * * * * * */
 app.get(`/review/:id`, async (req, res) => {
-  // 0) Look at "services/restaurantServer" and look for the giant "GET RESTAURANT" comment box for how to do it
-  console.log(`Finding review...`);
-  // 1) Get id from req.params.id
-  const { id } = req.params.id;
-  // 2) Use Review.findById to get review and store inside "result" variable
+  console.log('inside review/:id');
+  const { id } = req.params;
+
   const result = await Review.findById(id).exec();
-  // 3) Check if "result" is null (see the file in step 0)
-  if (!result) message = "Unable to get review"; 
-  // 4) res.send in the format below:
-  res.status(200).send({
-    message,
-    review: result
+
+  if (!result) {
+    console.log('Could not find review...');
+    return res.status(400).send({
+      error: err.message,
+      message: 'Unable to get review',
+    });
+  }
+
+  console.log('Found review...');
+
+  return res.send({
+    message: 'Review found',
+    userId: result.userId,
+    text: result.text,
+    restaurantId: result.restaurantId,
   });
-  /**
-   * {
-   *    message: "Found review",
-   *    userId: result.userId,
-   *    text: result.text,
-   *    restaurantId: result.restaurantId
-   * }
-   */
 });
+
+/**
+ * BELOW ARE AUTH ROUTES
+ */
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * POST Review           *
  * * * * * * * * * * * * */
 app.post(`/review`, (req, res) => {
-  // 0) Look at "services/registerServer" and look for the giant "REGISTER NEW USER" comment box for how to do it
-  console.log(`Attempting to post...`);
-  // 1) Get restaurantId, userId, and text from
-  //     - req.body.restaurantId & req.body.userId & req.body.text
-  const { restaurantId, userId, text} = req.body;
-  // 2) Use Review.create to create the review. See file in step 0.
-  Review.create({ restaurantId, userId, text }, (err, review) => {
-    //Failed to create new review
-    if (err) {
-      console.log('Review failed to post...');
+  console.log(`Attempting to post review...`);
 
-      return res.status(400).send({
-        error: err.message,
-        message: 'The review probably exists in the database or a field is empty',
-      });
+  const { restaurantId, text } = req.body;
+  const { username, password } = req.cookies;
+
+  // Look up user via cookies
+  // Get userId and username
+  User.find({ username, password }, (err, user) => {
+    if (err) {
+      res.send({ error: err, message: 'failed to post' });
     }
-    console.log('Review sucessfully posted!')
-  // 4) res.send in the format below:
-    return res.send({
-      message: 'Successfully posted review!',
-      userId: userId,
-      text: text,
-      restaurantId: restaurantId
+    console.log(user);
+
+    // Create new user in mongoDB
+    return Review.create({ restaurantId, userId: user[0]._id, text, username: user[0].username }, (err, review) => {
+      console.log('Inside Review.Create');
+      console.log(req.cookies);
+      // Failed to create new user
+      if (err) {
+        console.log('Post review failed...');
+
+        return res.status(400).send({
+          error: err.message,
+          message: 'Failed to post review',
+        });
+      }
+
+      console.log('Posted review successful...');
+
+      // Also need to update the Restaurant collection with the review
+      const headers = {
+        Cookie: 'username=bob; password=123;',
+        withCredentials: true,
+      };
+
+      // Add review to the restaurantIds
+      const p1 = axios.post(
+        'http://restaurant:3012/restaurant/addReview',
+        { restaurantId, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
+        headers,
+      );
+
+      // Add review to the user's collection
+      const p2 = axios.post(
+        'http://user:3010/user/updateReview',
+        { userId: user[0]._id, reviewId: review._id, username: req.cookies.username, password: req.cookies.password },
+        headers,
+      );
+
+      Promise.all([p1, p2])
+        .then(values => {
+          console.log('Resolving all Restaurant and User update for review...');
+          // console.log(values[0]);
+          // console.log(values[1]);
+
+          return res.send({
+            userId: user[0]._id,
+            message: 'Successfully posted review',
+            text: review.text,
+            restaurantId: review.restaurantId,
+          });
+        })
+        .catch(err => {
+          console.log('PROMISE ALL FAILED IN REVIEW SERVICE: ', err);
+          return res.send({ error: err, message: 'Failed to resolve all promise in review POST' });
+        });
     });
   });
-  /**
-   * {
-   *    message: "Successfully posted review",
-   *    userId: userId,
-   *    text: text,
-   *    restaurantId: restaurantId
-   * }
-   */
 });
 
 /* * * * * * * * * * * * *
  * UPDATE Review         *
  * * * * * * * * * * * * */
-app.put("/review/:id", (req, res) => {
+app.put('/review/:id', (req, res) => {
   // 0) Look at "services/userService" and look for the giant "UPDATE SINGLE USER" comment box for how to do it
-  let message = "Updated Review!";
   // 1) Get id from req.params.id &  Get text from req.body.text
-  const { id } = req.params;
-  const { text } = req.body;
   // 2) Use Review.findByIdAndUpdate to get review and store inside "updated" variable
   //    - Only update the "text" field
-  const updated = await Review.findByIdAndUpdate(id, { text }, { new: true });
-  // 3) Check if "updated" is null (see the file in step 0)
-  if (!updated) message = "Unable to update review!"
+  // 3) Check if "update" is null (see the file in step 0)
   // 4) res.send in the format below:
-  res.status(200).send({
-    message,
-    userId: updated.userId,
-    text: updated.text,
-    restaurantId: updated.restaurantId
-  });  
   /**
    * {
    *    message: "Updated review",
@@ -125,32 +157,20 @@ app.put("/review/:id", (req, res) => {
 });
 
 /* * * * * * * * * * * * * * *
- * DELETE Review by ID   *
+ * DELETE RESTAURANT by ID   *
  * * * * * * * * * * * * * * */
 app.delete(`/review/:id`, (req, res) => {
   // 0) Look at "services/restaurantServer" and look for the giant "DELETE RESTAURANT" comment box for how to do it
-  console.log('Attempting to delete review by Id..')
   // 1) Get id from req.params.id
-  const { id } = req.params;
-  // 1.5) let message = 'Successfully deleted review';
-  let message = 'Successfully deleted review';
   // 2) Use Review.findByIdAndRemove to delete review and store inside "remove" variable
-  const remove = await Review.findByIdAndRemove(id, { useFindandModify: false}).exec();
   // 3) Check if "remove" is null (see the file in step 0)
-  if(!remove) message = 'Unable to remove review'
   // 4) res.send in the format below:
-  res.status(200).send({
-    message,
-    userId: remove.userId,
-    text: remove.text,
-    restaurantId: remove.restaurantId
-  });
   /**
    * {
    *    message: "Deleted review",
-   *    userId: remove.userId,
-   *    text: remove.text,
-   *    restaurantId: remove.restaurantId
+   *    userId: removed.userId,
+   *    text: removed.text,
+   *    restaurantId: removed.restaurantId
    * }
    */
 });

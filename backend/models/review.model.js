@@ -1,18 +1,23 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
 
 const reviewSchema = new mongoose.Schema({
   username: {
     required: true,
-    type: String
+    type: String,
   },
   text: {
     required: true,
-    type: String
+    type: String,
   },
-  restaurantID: {
+  restaurantId: {
     required: true,
-    type: [Number]
-  }
+    type: String,
+  },
+  userId: {
+    required: true,
+    type: String,
+  },
 });
 
-module.exports = mongoose.model("review", reviewSchema);
+module.exports = mongoose.model('review', reviewSchema);
