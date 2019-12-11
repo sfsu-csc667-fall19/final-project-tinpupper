@@ -64,3 +64,14 @@ export const setRestaurantName = name => ({
   type : "SET_RESTAURANT_NAME",
   name
 })
+
+export const setBusinessesId = businessId => ({
+  type: "SET_BUSINESS_ID",
+  businessId,
+})
+
+
+export const setOwnedBusinesses = business => ({
+  type: "SET_OWNED_BUSINESS",
+  business,
+})

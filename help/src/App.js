@@ -29,9 +29,9 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        {isBusiness && <NavLink to="/business"> Business </NavLink>}
+        {isBusiness && <NavLink to="/business"> Create a new Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
-        {!isLoggedIn && <NavLink to="/join"> Join </NavLink>}
+        {!isLoggedIn && <NavLink to="/join"> Signup </NavLink>}
         {isLoggedIn && (
           <button
             className="btn btn-primary"
