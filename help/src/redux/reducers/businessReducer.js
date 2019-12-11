@@ -4,6 +4,8 @@ const DEFAULT_STATE = {
   newBusiness: '',
   isRedirect: false,
   currentBusiness: '',
+  businessesId: [],
+  ownedBusinesses: [],
 };
 //THIS IS TEMPORARY IN ORDER TO DISPLAY SOMETHING
 //will be replaced with an axios call and an empty array for businesses
@@ -48,6 +50,17 @@ const businessReducer = (state = DEFAULT_STATE, action) => {
         ...state,
         newBusiness: action.newBusiness,
       };
+    case 'SET_BUSINESS_ID':
+      return {
+        ...state,
+        businessesId: action.businessId
+      }
+    case 'SET_OWNED_BUSINESS':
+      return {
+        ...state,
+        ownedBusinesses: action.business,
+      }
+
     default:
       return state;
   }
