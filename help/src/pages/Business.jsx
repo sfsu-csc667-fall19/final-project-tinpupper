@@ -1,23 +1,21 @@
-import React from "react";
-import { Redirect, Link } from "react-router-dom";
-import { connect } from "react-redux";
-import axios from "axios";
-import {
-  setIsLoggedIn,
-  setIsBusiness,
-  setUsername
-} from "../redux/actions/userActions";
+import React from 'react';
+import { Redirect, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import { setIsLoggedIn, setIsBusiness, setUsername } from '../redux/actions/userActions';
 const options = {
-  withCredentials: true
+  withCredentials: true,
 };
 
 const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
-  const [restaurantName, setRestaurantName] = React.useState("");
-  const [restaurantDescription, setRestaurantDescription] = React.useState("");
+  const [restaurantName, setRestaurantName] = React.useState('');
+  const [restaurantDescription, setRestaurantDescription] = React.useState('');
+  const [ownedRestaurants, setOwnedRestaurants] = React.useState([]);
 
   React.useEffect(() => {
-    axios.post("/auth/cookies", options).then(res => {
-      if (res.data.message === "Successfully authenticated") {
+    axios.post('/auth/cookies', options).then(res => {
+      if (res.data.message === 'Successfully authenticated') {
+        console.log('authenticated');
         dispatch(setUsername(res.data.user.username));
         dispatch(setIsLoggedIn(true));
         dispatch(setIsBusiness(res.data.user.isBusiness));
@@ -25,22 +23,76 @@ const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
     });
   }, []);
 
+  React.useEffect(() => {
+    if (!isLoggedIn) return;
+
+    console.log('check is logged in');
+    console.log(isLoggedIn);
+
+    // Get logged in user information
+    axios.post('/auth/cookies', options).then(async res => {
+      console.log('logged in so check');
+      console.log(res.data.user.restaurantIds);
+
+      const ids = res.data.user.restaurantIds;
+      const restaurants = []; // Temporarly store restaurant objects here
+
+      const promises = [];
+
+      // Now we need to get the restaurant Ids for that user and use that to
+      // make an axios get request for each restaurant
+      ids.map(id => {
+        promises.push(
+          axios.get(`/restaurant/${id}`).then(res => {
+            console.log('add');
+            console.log(res.data);
+            restaurants.push(res.data);
+            console.log(restaurants);
+          }),
+        );
+      });
+
+      await Promise.all(promises);
+
+      console.log('setting owned restaursnts');
+      console.log(restaurants);
+      console.log(restaurants.length);
+      console.log(ownedRestaurants);
+      setOwnedRestaurants(oldArray => [...oldArray, ...restaurants]);
+    });
+  }, [isLoggedIn]);
+
   const body = {
     name: restaurantName,
-    description: restaurantDescription
+    description: restaurantDescription,
   };
 
   const createNewRestaurant = () => {
     console.log(body);
-    axios.post("/restaurant", body, options).then(res => {});
+    axios.post('/restaurant', body, options).then(res => {});
     const data = {
-      newRestaurant: body
+      newRestaurant: body,
     };
+  };
 
-    /****************
-     * JOHN (12/10/2019): Removed
-     ****************/
-    // window.ws.send(JSON.stringify(data));
+  const renderOwnedRestaurants = () => {
+    if (!ownedRestaurants || !ownedRestaurants.length || ownedRestaurants.length <= 0) return;
+    console.log('trying to render owned restaurants');
+    console.log(ownedRestaurants);
+    return ownedRestaurants.map(restaurant => {
+      console.log('test');
+      return (
+        <div
+          key={`${restaurant.name} & ${restaurant.ownerId}`}
+          style={{ marginTop: '30px', marginBottom: '30px', backgroundColor: 'grey' }}
+        >
+          <h1>Name: {restaurant.name}</h1>
+          <p>Description: {restaurant.description}</p>
+          <p>OwnerId: {restaurant.ownerId}</p>
+          <p>ReviewIds: {restaurant.reviewIds}</p>
+        </div>
+      );
+    });
   };
 
   return (
@@ -83,13 +135,14 @@ const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
           >
             Submit
           </button>
+
+          <div>{renderOwnedRestaurants()}</div>
         </div>
       ) : (
         <div>
           <br />
-
           <h3>
-            <Link to="/login" style={{ color: "red" }}>
+            <Link to="/login" style={{ color: 'red' }}>
               You cannot access this site. Please login or Signup
             </Link>
           </h3>
@@ -102,7 +155,7 @@ const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
 const mapStateToProps = state => ({
   username: state.userReducer.username,
   isLoggedIn: state.userReducer.isLoggedIn,
-  isBusiness: state.userReducer.isBusiness
+  isBusiness: state.userReducer.isBusiness,
 });
 
 export default connect(mapStateToProps)(Business);
