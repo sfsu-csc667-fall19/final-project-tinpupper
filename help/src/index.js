@@ -10,33 +10,35 @@ import rootReducer from './redux/reducers/rootReducer';
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { addNewBusiness } from './redux/actions/businessActions';
-const ws = new WebSocket('ws://167.172.249.188:3004/websocket');
+//const ws = new WebSocket('ws://167.172.249.188:3004/websocket');
 const store = createStore(rootReducer, applyMiddleware(thunk)); // MUST APPLY THUNK MIDDLEWARE!!
-ws.onclose = () => {
-  console.log('connection has closed');
-};
 
-ws.onopen = () => {
-  console.log('connection has opened');
-};
+/*************************
+ * JOHN (12/10/2019): WEBSOCKET Moved to Home.js
+ *************************/
+// ws.onclose = () => {
+//   console.log('connection has closed');
+// };
 
-ws.onmessage = message => {
-  console.log(`This is the message: `, message.data);
-  console.log(message);
-  switch (message.data) {
-    case 'updateRestaurant':
-	  console.log('This is called when a POST request is made to the restaurant');
-	  store.dispatch(addNewBusiness())
-      break;
-    default:
-      break;
-  }
-};
-ws.onerror = e => {
-  console.log(e);
-};
+// ws.onopen = () => {
+//   console.log('connection has opened');
+// };
 
-window.ws = ws;
+// ws.onmessage = message => {
+//   console.log(`This is the message: `, message.data);
+//   switch (message.data) {
+//     case 'updateRestaurant':
+//       console.log('This is called when a POST request is made to the restaurant');
+//       break;
+//     default:
+//       break;
+//   }
+// };
+// ws.onerror = e => {
+//   console.log(e);
+// };
+
+//window.ws = ws;
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,34 +1,31 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-import axios from "axios";
-import {connect} from "react-redux";
-import {
-  setRestaurantName,
-  setRestaurantDescription
-} from "../redux/actions/businessActions";
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import axios from 'axios';
+
 const options = {
-  withCredentials: true
+  withCredentials: true,
 };
 
-const Business = ({ dispatch, name, description }) => {
-  //   const [restaurantName, setRestaurantName] = React.useState("");
-  //   const [restaurantDescription, setRestaurantDescription] = React.useState("");
+const Business = () => {
+  const [restaurantName, setRestaurantName] = React.useState('');
+  const [restaurantDescription, setRestaurantDescription] = React.useState('');
 
   const body = {
-    name,
-    description
+    name: restaurantName,
+    description: restaurantDescription,
   };
 
   const createNewRestaurant = () => {
     console.log(body);
-    axios.post("/restaurant", body, options).then(res => {});
+    axios.post('/restaurant', body, options).then(res => {});
     const data = {
-      type: "updateRestaurant",
-      newRestaurant: body
+      newRestaurant: body,
     };
-    // let data = {
-    //     a : ""};
-    window.ws.send(JSON.stringify());
+
+    /****************
+     * JOHN (12/10/2019): Removed
+     ****************/
+    // window.ws.send(JSON.stringify(data));
   };
 
   return (
@@ -41,7 +38,7 @@ const Business = ({ dispatch, name, description }) => {
           type="text"
           className="form-control"
           onChange={e => {
-            dispatch(setRestaurantName(e.target.value));
+            setRestaurantName(e.target.value);
           }}
           placeholder="Desired restaurant(s)"
         />
@@ -54,7 +51,7 @@ const Business = ({ dispatch, name, description }) => {
           type="text"
           className="form-control"
           onChange={e => {
-            dispatch(setRestaurantDescription(e.target.value));
+            setRestaurantDescription(e.target.value);
           }}
           placeholder="Description of restaurant(s)"
         />
@@ -73,10 +70,6 @@ const Business = ({ dispatch, name, description }) => {
   );
 };
 
-const mapStateToProps = state => ({
-    name : state.businessReducer.name,
-    description : state.businessReducer.description
-})
 
 
-export default connect(mapStateToProps)(Business);
+export default Business;
