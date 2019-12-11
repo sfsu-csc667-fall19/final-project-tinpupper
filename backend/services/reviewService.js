@@ -28,8 +28,6 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookiesNotNull);
-app.use(authenticate);
 
 /* * * * * * * * * * * * * *
  * GET Single Review by ID *
@@ -57,6 +55,12 @@ app.get(`/review/:id`, async (req, res) => {
     restaurantId: result.restaurantId,
   });
 });
+
+/**
+ * BELOW ARE AUTH ROUTES
+ */
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * POST Review           *
