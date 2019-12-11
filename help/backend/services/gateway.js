@@ -11,33 +11,18 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
 
 console.log(`NODE ENV: ${NODE_ENV}`);
 
-const app = express();
-const appServer = server.createServer(app); // Move app to this because we need access to .on() function?
-const apiProxy = httpProxy.createProxyServer(app); // Why take in app as argument
+const app = express(); // for using app.all
+const appServer = server.createServer(app); // appServer since we need access to .on('upgrade')
+const apiProxy = httpProxy.createProxyServer(app); // used inside the .all as apiProxy.web
 
 const port = process.env.PORT || 3004;
 
-//
+// If someone ws://localhost:3004 it also moves them there?
+// Without using route, but both works
 const wsProxy = httpProxy.createProxyServer({
-  target: process.env.WEBSOCKET_HOST || 'http://localhost:6000',
+  target: `http://${process.env.WEBSOCKET_HOST}:${process.env.WEBSOCKET_PORT}` || 'http://localhost:6100',
   ws: true,
 });
-
-/**
- * TO IMPLEMENT:
- * 1) WebSocket realtime
- *  - Restaurant gets updated
- *  - Gets sent to everyone on website listening to websocket
- *  - Notification gets triggered (only works for restaurant updates)
- *  - Main page pushes new changes onto the site
- *
- * 2) Kafka
- *  - Business post restaurant data
- *  - Gateway -> Auth (allowed to post?)
- *    -> Producer: send inside route (req,res) (3 partition) -> Consumer: Seperate server handles this? (new file) ( /api/rest .post() )
- *
- * 3) Redis (same)
- */
 
 app.use(cors());
 app.use(cookieParser());
@@ -57,11 +42,13 @@ apiProxy.on('error', (err, req, res) => {
   });
 });
 
-wsProxy.on('error', (req, res, socket) => {
+wsProxy.on('error', (err, res, socket) => {
   console.log('* * * * * * * * * * * * * * * * *');
   console.log('* GATEWAY: wsProxy errored out  *');
   console.log('* * * * * * * * * * * * * * * * *');
   console.log(err);
+  console.log(res);
+  console.log(socket);
   socket.end();
 });
 
@@ -83,6 +70,39 @@ app.all(`/notes*`, (req, res) => {
 });
 
 /* * * * * * * * * *
+ * WEBSOCKET       *
+ * * * * * * * * * */
+app.all(`/websocket*`, (req, res) => {
+  console.log(req.path);
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: `http://websocket:${process.env.WEBSOCKET_PORT}`,
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: `http://localhost:${process.env.WEBSOCKET_PORT}`,
+    });
+  }
+});
+
+/* * * * * * * * * *
+ * REVIEW SERVICE    *
+ * * * * * * * * * */
+app.all(`/review*`, (req, res) => {
+  console.log(req.cookies);
+  console.log(req.path);
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://review:3013',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3013',
+    });
+  }
+});
+
+/* * * * * * * * * *
  * LOGIN/AUTH      *
  * * * * * * * * * */
 app.all(`/auth*`, (req, res) => {
@@ -93,6 +113,21 @@ app.all(`/auth*`, (req, res) => {
   } else {
     apiProxy.web(req, res, {
       target: 'http://localhost:3002',
+    });
+  }
+});
+
+/* * * * * * * * * *
+ * USER    *
+ * * * * * * * * * */
+app.all(`/user*`, (req, res) => {
+  if (NODE_ENV === 'prod') {
+    apiProxy.web(req, res, {
+      target: 'http://user:3010',
+    });
+  } else {
+    apiProxy.web(req, res, {
+      target: 'http://localhost:3010',
     });
   }
 });
@@ -161,4 +196,14 @@ app.all('*', (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`Gateway on port ${port}!`));
+/* * * * * *
+ * UPGRADE *
+ * * * * * */
+appServer.on('upgrade', (req, socket, head) => {
+  console.log('*****************');
+  console.log('upgrade ws here');
+  console.log('*****************');
+  wsProxy.ws(req, socket, head);
+});
+
+appServer.listen(port, () => console.log(`Gateway on port ${port}!`));

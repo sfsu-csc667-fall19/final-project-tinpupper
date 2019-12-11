@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://167.172.249.188:3004",
+  "proxy2": "http://167.172.249.188:3004",
   "dependencies": {
     "axios": "^0.19.0",
     "axis": "^1.0.0",

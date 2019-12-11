@@ -3,14 +3,13 @@
 - [Cookie](#Cookie)
 - [Login](#Login)
 - [Register](#Register)
-- [User](#User)
 - [Restaurant](#Restaurant)
+- [Review](#Review)
+- [User](#User)
 
-TODO:
-Update user response to have restaurants ID
-Fix login response since more data is added
-Add /auth/cookie documentation
-Fix auth cookie response more data added
+## Warning
+
+**docker-compose build** needs to be ran before **docker stack deploy -c**
 
 ## Note
 
@@ -22,6 +21,10 @@ All errors are in the following format:
   message: STRING
 }
 ```
+
+## WebSocket
+
+- Triggered during restaurant POST
 
 ---
 
@@ -262,10 +265,11 @@ N/A
 
 ```
 {
+  ownerId: "5dcdf1686f1fdecd6256f232",
   message: 'Restaurant found',
   name: 'Pho Noodle House'
   description: 'A great place to eat stuff and do things'
-  reviews: [userID: int]
+  reviewIds: [reviewId: int]
 }
 ```
 
@@ -290,7 +294,8 @@ N/A
 
 ```
 {
-  message: 'Creating restaurant... (kafka)',
+  ownerId: "5dcdf1686f1fdecd6256f232",
+  message: 'Creating restaurant...',
   name: 'Pho Noodle House',
   description: 'This is a restaurant that sells food oh yes it does.'
 }
@@ -316,5 +321,145 @@ N/A
 {
   message: 'Deleted restaurant',
   id: '219308s90f0nd98xdfioue'
+}
+```
+
+---
+
+## Review
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/review/:id
+```
+
+**Response:**
+
+```
+{
+  message: "Found review",
+  userId: "alwkchkh879172897",
+  restaurantId: "hkchichz8hch89ey9hui"
+  text: "Wow this restaurant is a restaurant",
+}
+```
+
+**Method:** Get
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/review
+```
+
+**Response:**
+
+```
+{
+  message: "Found reviews",
+  reviews: [
+    {
+      userId: "alwkchkh879172897",
+      restaurantId: "hkchichz8hch89ey9hui"
+      text: "Wow this restaurant is a restaurant"
+    }
+  ]
+}
+```
+
+**Method:** Post
+
+**Body:**
+
+```
+{
+  text: "Wow this is a review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**URL:**
+
+```
+/review
+```
+
+**Response:**
+
+```
+{
+  message: "Successfully posted review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is a review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**Method:** Put
+
+**Body:**
+
+```
+{
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is an updated review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**URL:**
+
+```
+/review/:id
+```
+
+**Response:**
+
+```
+{
+  message: "Updated review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is an updated review",
+  restaurantId: "klankjjcbiwb9392b839ib"
+}
+```
+
+**Method:** Delete
+
+**Body:**
+
+```
+N/A
+```
+
+**URL:**
+
+```
+/review/:id
+```
+
+**Response:**
+
+```
+{
+  message: "Deleted review",
+  userId: "kanwoihxc89oh43",
+  text: "Wow this is an updated review",
+  restaurantId: "klankjjcbiwb9392b839ib"
 }
 ```

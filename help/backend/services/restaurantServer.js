@@ -2,10 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const axios = require('axios');
+const cookieParser = require('cookie-parser');
 const connect = require('../mongo/connect');
 const Restaurant = require('../models/restaurant.model');
+const User = require('../models/user.model');
 const KafkaProducer = require('../helpers/KafkaProducer');
 const { RESTAURANT_DELETE, RESTAURANT_POST, RESTAURANT_UPDATE } = require('../helpers/KafkaTopicNames');
+const { cookiesNotNull, authenticate } = require('../note/note.controller');
 
 const producerPost = new KafkaProducer(RESTAURANT_POST);
 const producerUpdate = new KafkaProducer(RESTAURANT_UPDATE);
@@ -31,8 +35,13 @@ connect(mongoUrl)
   });
 
 app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Uncomment to re-enable authentication
+// app.use(cookiesNotNull);
+// app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * GET ALL RESTAURANT    *
@@ -79,17 +88,74 @@ app.get(`/restaurant/:id`, async (req, res) => {
   return res.send({
     message: 'Restaurant found',
     name: result.name,
-    reviews: [1, 2, 3], // The user ids of those who left reviews
+    description: result.description,
+    ownerId: result.ownerId,
+    reviewIds: result.reviewIds,
   });
 });
+
+app.use(cookiesNotNull);
+app.use(authenticate);
 
 /* * * * * * * * * * * * *
  * POST RESTAURANT       *
  * * * * * * * * * * * * */
-app.post(`/restaurant`, (req, res) => {
+app.post(`/restaurant`, async (req, res) => {
   const { name, description } = req.body;
-  producerPost.send({ name, description });
-  res.send({ name, description, message: 'Creating restaurant...' });
+  console.log(`${name} and ${description}`);
+  console.log('before cookies');
+  const { username, password } = req.cookies;
+  const imageUrl =
+    'https://cdn2.atlantamagazine.com/wp-content/uploads/sites/4/2019/07/RestaurantEugene01_courtesy.jpg';
+
+  // Also need to get the logged in user _id from MongoDB
+  // 1) MongoDB Search username and password combination to get that user
+  console.log(`Finding ${username} and ${password}`);
+  User.find({ username, password }, (err, user) => {
+    if (err) {
+      res.send({ error: err, message: 'failed to post' });
+    }
+    console.log(user);
+    producerPost.send({ name, description, ownerId: user[0]._id, imageUrl, username, password });
+    res.send({
+      ownerId: user[0]._id,
+      name,
+      description,
+      imageUrl,
+      loggedIn: { username: user[0].username, password: user[0].password },
+      message: 'Creating restaurant...',
+    });
+  });
+});
+
+/* * * * * * * * * * * * *
+ * UPDATE RESTAURANT     *
+ * * * * * * * * * * * * */
+app.put('/restaurant/:id', (req, res) => {
+  const { id } = req.params;
+  producerUpdate.send({ id });
+
+  // UPDATE isnt in documentation
+  res.send({ name, message: 'Updating restaurant...' });
+});
+
+/* * * * * * * * * * * * *
+ * PRIVATE POST: ADD TO review IDs       *
+ * * * * * * * * * * * * */
+app.post(`/restaurant/addReview`, (req, res) => {
+  console.log('inside restaurant/addReview');
+  console.log(req.body);
+  const { restaurantId, reviewId } = req.body;
+
+  let message = 'Updated restaurant with new reviewId';
+
+  // Use mongoDB here to add to review array
+  Restaurant.update({ _id: restaurantId }, { $push: { reviewIds: reviewId } }, (err, result) => {
+    console.log('RESULT: ', result);
+    console.log('ERR: ', err);
+    if (err) message = 'Unable to updated review for restaurant';
+    res.send({ restaurantId, reviewId, message });
+  });
 });
 
 /* * * * * * * * * * * * *
@@ -106,17 +172,22 @@ app.put('/restaurant/:id', (req, res) => {
 /* * * * * * * * * * * * *
  * DELETE RESTAURANT     *
  * * * * * * * * * * * * */
-app.delete(`/restaurant/:id`, (req, res) => {
-  /**
-   * Check the backend documentation on our team's GitHub on how the body is received and how to respond
-   *
-   * 1) Get the restaurant's id from req.params
-   * 2) Delete this from the database using this function
-   *    - Restaurant.findByIdAndRemove( id, func(err, res) )
-   *    - Go to /backend/services/userService.js and CTRL+F "User.findByIdAndRemove" for an example usage
-   * 3) Send back responses properly (see documentation in RESTAURANT section for DELETE method)
-   */
-  res.send('need to make');
+app.delete(`/restaurant/:id`, async (req, res) => {
+  const { id } = req.params;
+  //get id for restraurant
+  let message = 'Successfully deleted restaurant';
+  //default message that res was deleted
+  const remove = await Restaurant.findByIdAndRemove(id, { useFindandModify: false }).exec();
+  //delete from data base
+
+  if (!remove) message = 'Unable to remove restaurant';
+  //message if the delete failed
+
+  //send back responses
+  res.status(200).send({
+    message,
+    restaurant: removed,
+  });
 });
 
 app.listen(port, () => console.log(`RESTAURANT: ${port}!`));

@@ -10,6 +10,8 @@ services:
     depends_on: ['redisServer', 'kafka']
     environment:
       - NODE_ENV=prod
+      - WEBSOCKET_HOST=websocket
+      - WEBSOCKET_PORT=3027
     deploy:
       replicas: 1
       restart_policy:
@@ -34,6 +36,20 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+  user:
+    container_name: userServer
+    image: john/final667
+    build: .
+    command: ['node', './services/userService.js']
+    depends_on: ['redisServer', 'kafka']
+    environment:
+      - REDISHOST=redisServer
+      - DOMAIN=user
+      - NODE_ENV=prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
   auth:
     container_name: authService
     image: john/final667
@@ -44,18 +60,51 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-  restaurant:
-    container_name: restaurantService
+  review:
+    container_name: reviewService
     image: john/final667
+    build: .
+    command: ['node', './services/reviewService.js']
+    depends_on: ['redisServer', 'kafka']
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
-    build: .
+  restaurant:
+    container_name: restaurantService
+    image: john/final667
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    depends_on: ['redisServer', 'kafka']
     command: ['node', './services/restaurantServer.js']
+    build: .
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  websocket:
+    container_name: websocketService
+    image: john/final667
+    depends_on: ['redisServer', 'kafka']
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    build: .
+    command: ['node', './services/websocket.js']
   restaurantConsumer:
     container_name: restaurantConsumerService
     image: john/final667
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
     deploy:
       replicas: 1
       restart_policy:

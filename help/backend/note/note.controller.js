@@ -103,15 +103,17 @@ const cookiesNotNull = (req, res, next) => {
   console.log('Inside cookiesNotNull middleware');
   req.hasCookies = false;
 
+  console.log('COOKIES: ', req.cookies);
+  console.log(`BODY: `, req.body);
+
   // Invalid cookies
   if (!req.cookies.username || !req.cookies.password) {
     // Continue if they have a body
     if (req.body.username && req.body.password) return next();
     console.error('FAILED COOKIESNOTNULL CHECK', req.body);
+    console.error('CHECK COOKIES: ', req.cookies);
     console.log(req.cookies);
-    return res
-      .status(400)
-      .send({ error: 'No valid cookies or body authorization' });
+    return res.status(400).send({ error: 'No valid cookies or body authorization' });
   }
 
   req.hasCookies = true;
@@ -147,7 +149,7 @@ const authenticate = (req, res, next) => {
   console.log(`Here is the current key: `, key);
 
   // Verify with REDIS that we have a cached version of this user
-  client.get(key, (err, cachedValue) => {
+  client.get(key, async (err, cachedValue) => {
     console.log(`Error: `, err);
     console.log('cached value is: ', cachedValue);
     // Key exists
@@ -160,23 +162,30 @@ const authenticate = (req, res, next) => {
       }
     }
 
-    console.log(
-      'Did not find user in cache, so verify with auth server instead',
-    );
+    console.log('Did not find user in cache, so verify with auth server instead');
     // User info doesn't exist in cache, so verify with auth server
     if (NODE_ENV === 'prod') {
-      return verifyWithAuthServer('auth', next, key, body, res);
+      console.log('Before prod');
+      const value = await verifyWithAuthServer('auth', next, key, body, res);
+      if (value === true) {
+        console.log('value true return next middleware');
+        return next();
+      }
+      console.log('VALUE', value);
+      return res.send(value);
+      console.log('after prod');
     }
-    return verifyWithAuthServer('localhost', next, key, body, res);
+    console.log('after prod2');
+    return await res.send(verifyWithAuthServer('localhost', next, key, body, res));
   });
 };
 
 /* * * * * * * * * * * * *
  * HELPER FOR NODE_ENV   *
  * * * * * * * * * * * * */
-const verifyWithAuthServer = (domain, next, key, body, res) => {
+const verifyWithAuthServer = async (domain, next, key, body, res) => {
   console.log(`Attemping to verify ${body.username}`);
-  return axios
+  return await axios
     .post(`http://${domain}:3002/auth`, body)
     .then(resInner => {
       console.log('res inner postToAuthServer');
@@ -184,21 +193,27 @@ const verifyWithAuthServer = (domain, next, key, body, res) => {
       if (resInner.data.valid) {
         console.log(`Valid successful`);
         client.set(key, true);
-        return next(); // Next middleware
+        return true; // Next middleware
       }
 
       // Auth server says user is invalid, don't return next middleware
       client.set(key, false);
-      resInner.status(403);
+      // resInner.status(403);
       console.log(`Valid failed`);
-      return resInner.send('Auth server failed to authenticate user');
+      //return resInner.send('Auth server failed to authenticate user');
+      return { message: 'Auth server failed to authenticate user' };
     })
     .catch(err => {
+      console.log('FAILED TO VERIFY AITH AUTH SERVER');
       console.log(err.response.data);
-      return res.send({
-        error: err.response.data.error,
+      // return res.send({
+      //   error: err.response.data.error,
+      //   valid: false,
+      // });
+      return {
+        error: err.response.data.erorr,
         valid: false,
-      });
+      };
     });
 };
 

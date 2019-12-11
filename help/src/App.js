@@ -29,27 +29,26 @@ const App = ({ isLoggedIn, dispatch, isBusiness, isSignedUp }) => {
         className="flex-display-row justify-content-space-evenly padding-2-p border-bottom"
       >
         <NavLink to="/">Home </NavLink>
-        <NavLink to="/settings"> Settings </NavLink>
         {isBusiness && <NavLink to="/business"> Business </NavLink>}
         {!isLoggedIn && <NavLink to="/login"> Login </NavLink>}
         {!isLoggedIn && <NavLink to="/join"> Join </NavLink>}
-
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            logOutUser();
-          }}
-        >
-          Log Out
-        </button>
+        {isLoggedIn && (
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              logOutUser();
+            }}
+          >
+            Log Out
+          </button>
+        )}
       </div>
       <Switch>
         <Route path="/writereview" component={Reviews} />
-        <Route path="/settings" />
         <Route path="/business" component={Business} />
         <Route path="/login" component={Login} />
         <Route path="/join" component={Signup} />
-
+        <Route path="/home" component={Home} />
         <Route exact path="/" component={Home} />
       </Switch>
     </div>

@@ -22,15 +22,17 @@ const Signup = ({ dispatch, username, isSignedUp, isBusiness }) => {
 	const[isBusinessLocal, setIsBusinessLocal] = React.useState(false);
 
 	const registerUser = () => {
+		dispatch(setIsBusiness(false));
 		const body = {
 			username,
 			password: md5(password),
 			isBusiness: isBusinessLocal,
 		};
 		console.log(body);
-		
+
 		axios.post("/register", body, options).then(res => {
 			console.log(res);
+			debugger;
 			if (res.data.message === "Successfully registered user") {
 				dispatch(setIsSignedUp(true));
 				dispatch(setIsBusiness(isBusinessLocal));
