@@ -27,8 +27,9 @@ connect(mongoUrl)
     console.error('+_+_+_+_+ Failed to connect to database in registerService +_+_+_+_+');
   });
 
-app.use(cookiesNotNull);
-app.use(authenticate);
+// app.use(cookiesNotNull);
+// app.use(authenticate);
+
 app.use(morgan());
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -50,6 +51,7 @@ app.put('/user/:id', async (req, res) => {
   const updated = await User.findByIdAndUpdate(id, { username }, { new: true });
   //finds user by id and updates the username
   if (!updated) message = 'Unable to update user';
+
   //if update failed - message
   res.status(200).send({
     //response sent to front end
