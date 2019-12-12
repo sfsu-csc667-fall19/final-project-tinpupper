@@ -1,0 +1,131 @@
+version: '3.2'
+services:
+  gateway:
+    container_name: gatewayService
+    image: final6671
+    ports:
+      - '3004:3004'
+    command: ['node', '../backend/services/gateway.js']
+    depends_on: ['redisServer', 'kafka']
+    environment:
+      - NODE_ENV=prod
+      - WEBSOCKET_HOST=websocket
+      - WEBSOCKET_PORT=3027
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  fileServer:
+    container_name: fileServer
+    image: final6671
+    command: ['node', '../backend/services/fileServer.js']
+    depends_on: ['redisServer', 'kafka']
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  register:
+    container_name: registerServer
+    image: final6671
+    command: ['node', '../backend/services/registerServer.js']
+    depends_on: ['redisServer', 'kafka']
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  user:
+    container_name: userServer
+    image: final6671
+    command: ['node', '../backend/services/userService.js']
+    depends_on: ['redisServer', 'kafka']
+    environment:
+      - REDISHOST=redisServer
+      - DOMAIN=user
+      - NODE_ENV=prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  auth:
+    container_name: authService
+    image: final6671
+    command: ['node', '../backend/services/authService.js']
+    depends_on: ['redisServer', 'kafka']
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  review:
+    container_name: reviewService
+    image: final6671
+    command: ['node', '../backend/services/reviewService.js']
+    depends_on: ['redisServer', 'kafka']
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  restaurant:
+    container_name: restaurantService
+    image: final6671
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    depends_on: ['redisServer', 'kafka']
+    command: ['node', '../backend/services/restaurantServer.js']
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  websocket:
+    container_name: websocketService
+    image: final6671
+    depends_on: ['redisServer', 'kafka']
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    command: ['node', '../backend/services/websocket.js']
+  restaurantConsumer:
+    container_name: restaurantConsumerService
+    image: final6671
+    environment:
+      - REDISHOST=redisServer
+      - NODE_ENV=prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    command: ['node', '../backend/services/restaurantConsumer.js']
+  redisServer:
+    image: redis
+    container_name: redisCache
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - '2181:2181'
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - '9092:9092'
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: '9092'
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
