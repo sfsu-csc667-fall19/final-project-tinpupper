@@ -1,4 +1,4 @@
-## Table of Contents (API)
+## Table of Content (API)
 
 - [Cookie](#Cookie)
 - [Login](#Login)
