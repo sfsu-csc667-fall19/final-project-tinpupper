@@ -55,7 +55,6 @@ const Reviews = ({ dispatch, isBusiness, isLoggedIn, username, currentBusiness }
         dispatch(setIsBusiness(res.data.user.isBusiness));
         dispatch(setIsLoggedIn(true));
         let currentBusinessTemp = currentBusiness.name;
-        console.log('current b t', currentBusinessTemp);
         document.cookie = `currentBusiness=${currentBusinessTemp}`;
       } else {
         dispatch(setCurrentBusiness(null));

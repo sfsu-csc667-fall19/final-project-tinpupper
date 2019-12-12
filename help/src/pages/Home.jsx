@@ -45,21 +45,20 @@ const Home = ({
 
   React.useEffect(() => {
     // const ownedBusinessListings = async () => {
-      axios.post("/auth/cookies", options).then(res => {
-        console.log("AC", res);
-        if (res.data.message === "Successfully authenticated") {
-          // debugger;
-          dispatch(setUsername(res.data.user.username));
-          dispatch(setIsBusiness(res.data.user.isBusiness));
-          dispatch(setIsLoggedIn(true));
-          console.log("The is business", isBusiness);
-          // if (res.data.user.restaurantIds && res.data.user.isBusiness) {
-          //   dispatch(setBusinessesId(res.data.user.restaurantIds));
-          // }
-          // console.log("asdffffffffffffffff", businessesId);
-        }
-      });
-
+    axios.post("/auth/cookies", options).then(res => {
+      console.log("AC", res);
+      if (res.data.message === "Successfully authenticated") {
+        // debugger;
+        dispatch(setUsername(res.data.user.username));
+        dispatch(setIsBusiness(res.data.user.isBusiness));
+        dispatch(setIsLoggedIn(true));
+        console.log("The is business", isBusiness);
+        // if (res.data.user.restaurantIds && res.data.user.isBusiness) {
+        //   dispatch(setBusinessesId(res.data.user.restaurantIds));
+        // }
+        // console.log("asdffffffffffffffff", businessesId);
+      }
+    });
   }, []);
 
   // React.useEffect(() => {
@@ -138,13 +137,20 @@ const Home = ({
         {isLoggedIn && !isBusiness && (
           <h3>
             Hello, <b>{username} </b>
-            <br />
+            <br></br>
+            Write a review for these restaurants!
           </h3>
         )}
         {isLoggedIn && isBusiness && (
-          <h3>
-            Businesses that you own, <b>{username}</b> :
-          </h3>
+          <div>
+            <h3>
+              Welcome to your business account, <b>{username}</b>:
+              <br />
+            </h3>
+            <Link to="/business">
+              <u><k style={{size: "0.5rem"}}>Click here to view your business or Create a new one!</k></u>
+            </Link>
+          </div>
         )}
         <br />
       </div>
@@ -156,55 +162,55 @@ const Home = ({
       {/* Note that I changed businesses.map to businesses.restaurants.map */}
       {/* ********************************************************************************* */}
       {/* {!isBusiness && ( */}
-        <div>
-          {businesses.map((business, i) => (
-            <div key={i} className="display-row padding-2-p">
-              <Card style={{ width: "18rem" }}>
-                <Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
-                {/* will be replaced by business.img if thats doable*/}
-                <Card.Body>
-                  <Card.Title>{business.name}</Card.Title>{" "}
-                  {/* will be replaced by business.name or something*/}
-                  <Card.Text>
-                    {/* will be replaced by business.text */}
-                    {business.description}
-                  </Card.Text>
-                  {!isBusiness ? (
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        console.log(business);
-                        /*********************************************************
-                         * JOHN (12/10/2019):
-                         * CHANGES HERE
-                         *********************************************************/
-                        dispatch(setCurrentBusiness(business));
-                        console.log(businesses);
-                        dispatch(setIsRedirect(true));
-                      }}
-                    >
-                      Write a review
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        dispatch(setCurrentBusiness(business.name));
-                        console.log(businesses);
-                        dispatch(setIsRedirect(true));
-                      }}
-                    >
-                      Read review
-                    </Button>
-                  )}
-                </Card.Body>
-              </Card>
-            </div>
-          ))}
-        </div>
-        </div>
-      )
-      }
+      <div>
+        {businesses.map((business, i) => (
+          <div key={i} className="display-row padding-2-p">
+            <Card style={{ width: "18rem" }}>
+              <Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
+              {/* will be replaced by business.img if thats doable*/}
+              <Card.Body>
+                <Card.Title>{business.name}</Card.Title>{" "}
+                {/* will be replaced by business.name or something*/}
+                <Card.Text>
+                  {/* will be replaced by business.text */}
+                  {business.description}
+                </Card.Text>
+                {!isBusiness ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      console.log(business);
+                      /*********************************************************
+                       * JOHN (12/10/2019):
+                       * CHANGES HERE
+                       *********************************************************/
+                      dispatch(setCurrentBusiness(business));
+                      console.log(businesses);
+                      dispatch(setIsRedirect(true));
+                    }}
+                  >
+                    Write a review
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      dispatch(setCurrentBusiness(business.name));
+                      console.log(businesses);
+                      dispatch(setIsRedirect(true));
+                    }}
+                  >
+                    Read review
+                  </Button>
+                )}
+              </Card.Body>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 const mapStateToProps = state => ({
   businesses: state.businessReducer.businesses,
   isLoggedIn: state.userReducer.isLoggedIn,

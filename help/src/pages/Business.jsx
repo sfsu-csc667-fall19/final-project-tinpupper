@@ -2,12 +2,23 @@ import React from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 import { setIsLoggedIn, setIsBusiness, setUsername } from '../redux/actions/userActions';
+import {
+  setIsRedirect,
+  setCurrentBusiness,
+  setBusinesses,
+  getUpdatedBusinessesAsync,
+  setBusinessesId,
+  setOwnedBusinesses
+} from "../redux/actions/businessActions";
+
 const options = {
   withCredentials: true,
 };
 
-const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
+const Business = ({ dispatch, username, isLoggedIn, isBusiness, isRedirect }) => {
   const [restaurantName, setRestaurantName] = React.useState('');
   const [restaurantDescription, setRestaurantDescription] = React.useState('');
   const [ownedRestaurants, setOwnedRestaurants] = React.useState([]);
@@ -67,13 +78,21 @@ const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
     description: restaurantDescription,
   };
 
-  const createNewRestaurant = () => {
+  const createNewRestaurant = async () => {
     console.log(body);
-    axios.post('/restaurant', body, options).then(res => {});
+    await axios.post('/restaurant', body, options).then(res => {});
     const data = {
       newRestaurant: body,
     };
+    window.location.href= "/business";
+      // <Redirect to ="/business"></Redirect>
   };
+
+   if (isRedirect) {
+     console.log(isRedirect);
+     dispatch(setIsRedirect(false));
+     return <Redirect to="/writereview" />;
+   }
 
   const renderOwnedRestaurants = () => {
     if (!ownedRestaurants || !ownedRestaurants.length || ownedRestaurants.length <= 0) return;
@@ -82,14 +101,40 @@ const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
     return ownedRestaurants.map(restaurant => {
       console.log('test');
       return (
+        // <div
+        //   key={`${restaurant.name} & ${restaurant.ownerId}`}
+        //   style={{ marginTop: '30px', marginBottom: '30px', backgroundColor: 'grey' }}
+        // >
+        //   <h1>Name: {restaurant.name}</h1>
+        //   <p>Description: {restaurant.description}</p>
+        //   <p>OwnerId: {restaurant.ownerId}</p>
+        //   <p>ReviewIds: {restaurant.reviewIds}</p>
+        // </div>
         <div
           key={`${restaurant.name} & ${restaurant.ownerId}`}
-          style={{ marginTop: '30px', marginBottom: '30px', backgroundColor: 'grey' }}
+          className="display-row padding-2-p"
         >
-          <h1>Name: {restaurant.name}</h1>
-          <p>Description: {restaurant.description}</p>
-          <p>OwnerId: {restaurant.ownerId}</p>
-          <p>ReviewIds: {restaurant.reviewIds}</p>
+          <Card style={{ width: "18rem" }}>
+            <Card.Img src={require("../img/Mcdonalds.jpg")} />{" "}
+            {/* will be replaced by business.img if thats doable*/}
+            <Card.Body>
+              <Card.Title>{restaurant.name}</Card.Title>{" "}
+              {/* will be replaced by business.name or something*/}
+              <Card.Text>
+                {/* will be replaced by business.text */}
+                {restaurant.description}
+              </Card.Text>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  dispatch(setCurrentBusiness(restaurant.name));
+                  dispatch(setIsRedirect(true));
+                }}
+              >
+                Read reviews
+              </Button>
+            </Card.Body>
+          </Card>
         </div>
       );
     });
@@ -135,7 +180,7 @@ const Business = ({ dispatch, username, isLoggedIn, isBusiness }) => {
           >
             Submit
           </button>
-
+          <h3>Business that you own:</h3>
           <div>{renderOwnedRestaurants()}</div>
         </div>
       ) : (
@@ -156,6 +201,7 @@ const mapStateToProps = state => ({
   username: state.userReducer.username,
   isLoggedIn: state.userReducer.isLoggedIn,
   isBusiness: state.userReducer.isBusiness,
+  isRedirect: state.businessReducer.isRedirect,
 });
 
 export default connect(mapStateToProps)(Business);
