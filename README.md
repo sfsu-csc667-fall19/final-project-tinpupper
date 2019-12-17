@@ -1,5 +1,8 @@
 # Project Name
 
+## Website Link
+http://167.172.249.188:3004/
+
 ## Writeup
 
 In order to complete the project we decided to split the team into two seperate groups. Three would work on the backend and three would work on the frontend. We used Kafka to create a restaurant which would then put it into the “conveyer” by the producer. Our consumer would then listen to anything added on to that “conveyer” and then would create that restaurant in our database. For websocket, we created live updates for the restaurants so that if a business creates a new restaurant, then it will be updated live. We would have added it for the reviews, but we decided to focus on finishing the minimal requirements since other members had other projects to do. For redis, we cached user information so we wouldn’t have to hit the database too much. For docker, it was configured successfully and is hosted in our remote server. Both frontend and backend are together in docker. We divided each services into their own separate containers. Following the microservice architecture, we multiple services which handled the restaurant, review, login, register, user, and auth.
