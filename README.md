@@ -13,6 +13,8 @@ We used Postman to test the backend since we didn’t want to rely on the Fronte
 
 There is also documentation written for the backend to assist in understanding how the API works. If you enter the “backend” folder in the GitHub, you can scroll down to see the readme which will contain the documentation.
 
+The problems faced by the frontend team was to organize how the flow of the application would be.  There were some issues that we were facing with implementing the kafka and websocket code on the front end, but with the help of the backend team, we were able to solve it. Redux implementation was straightforward, used for keeping the username and personal data persistent, to make the website more personal. Transforming from dummy data to the actual data provided from the backend turned out to be a bit of a hassle, but we did solve it eventually. The login and signup was using the same service for login/registration making it a bit difficult to combine everything with the backend.
+
 ## Backend
 
 Please go to the "backend" directory to see the readme for the API documentation
