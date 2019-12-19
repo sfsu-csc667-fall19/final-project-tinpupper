@@ -140,12 +140,21 @@ app.post(`/review`, (req, res) => {
  * UPDATE Review         *
  * * * * * * * * * * * * */
 app.put('/review/:id', (req, res) => {
-  // 0) Look at "services/userService" and look for the giant "UPDATE SINGLE USER" comment box for how to do it
+   let message = "";
   // 1) Get id from req.params.id &  Get text from req.body.text
+    const { id } = req.params;
   // 2) Use Review.findByIdAndUpdate to get review and store inside "updated" variable
+    const updated = await Review.findByIdAndUpdate(id, text); 
   //    - Only update the "text" field
-  // 3) Check if "update" is null (see the file in step 0)
+  // 3) Check if "update" is null
+    if(update = null) { message = 'Unable to update review'};
   // 4) res.send in the format below:
+      res.status(200).send({
+        message: "Updated review",
+        userId: updated.userId,
+        text: updated.text,
+        restaurantId: updated.restaurantId,
+      })
   /**
    * {
    *    message: "Updated review",
@@ -160,11 +169,21 @@ app.put('/review/:id', (req, res) => {
  * DELETE RESTAURANT by ID   *
  * * * * * * * * * * * * * * */
 app.delete(`/review/:id`, (req, res) => {
-  // 0) Look at "services/restaurantServer" and look for the giant "DELETE RESTAURANT" comment box for how to do it
+  let message = "";
   // 1) Get id from req.params.id
+  const { id } = req.params.id;
   // 2) Use Review.findByIdAndRemove to delete review and store inside "remove" variable
-  // 3) Check if "remove" is null (see the file in step 0)
-  // 4) res.send in the format below:
+  const remove = await Review.findByIdAndRemove(id, {
+    useFindandModify: false,
+  }).exec();
+  // 3) Check if "remove" is null
+  if (remove = null){ message= "Unable to delete review"}
+    res.send({
+      message: "Deleted review",
+      userId: removed.userId,
+      text: removed.text,
+      restaurantId: removed.restaurantId,
+    });
   /**
    * {
    *    message: "Deleted review",
