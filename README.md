@@ -18,3 +18,7 @@ The problems faced by the frontend team was to organize how the flow of the appl
 ## Backend
 
 Please go to the "backend" directory to see the readme for the API documentation
+
+## DOCUMENT FOR THE FINAL.
+
+The document for the submission is named "CSC 667 Final Document"
