@@ -21,4 +21,4 @@ Please go to the "backend" directory to see the readme for the API documentation
 
 ## DOCUMENT FOR THE FINAL.
 
-The document for the submission is named "CSC 667 Final Document"
+The document for the submission is named "CSC 667 Final Report"
